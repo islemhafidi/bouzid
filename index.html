@@ -490,8 +490,18 @@
             }
         }
 
-        #parallax-map svg {
-            animation: map-breathe 18s ease-in-out infinite;
+        #parallax-map img {
+            animation: map-breathe 22s ease-in-out infinite;
+            opacity: 0.055;
+            filter: invert(1);
+            mix-blend-mode: screen;
+            transition: filter 0.3s, mix-blend-mode 0.3s, opacity 0.3s;
+        }
+
+        body.light-mode #parallax-map img {
+            filter: none;
+            mix-blend-mode: multiply;
+            opacity: 0.075;
         }
 
         /* ============================================================
@@ -831,8 +841,8 @@
                     rgba(232, 237, 245, 0.4) 100%) !important;
         }
 
-        body.light-mode #parallax-map svg {
-            opacity: 0.06 !important;
+        body.light-mode #parallax-map img {
+            opacity: 0.075 !important;
         }
 
         body.light-mode #scan-line {
@@ -1145,143 +1155,17 @@
     ============================================================ -->
     <canvas id="bg-canvas" aria-hidden="true"></canvas>
 
-    <!-- BACKGROUND LAYER 2 — Parallax Khenchela Map SVG -->
+    <!-- BACKGROUND LAYER 2 — Parallax Algeria Map Background -->
     <div id="parallax-map" aria-hidden="true">
-        <svg viewBox="0 0 800 900" xmlns="http://www.w3.org/2000/svg" style="
+        <img src="algeria-map.jpg" alt="Algeria Map Background" style="
                 position:absolute;
                 top:50%; left:50%;
                 transform:translate(-50%,-50%);
-                width: min(90vw, 860px);
+                width: min(90vw, 800px);
                 height: auto;
-                opacity: 0.10;
                 pointer-events: none;
                 transform-origin: center center;
             ">
-            <defs>
-                <!-- Gold accent gradient for key roads/borders -->
-                <linearGradient id="goldLine" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stop-color="#D9B137" stop-opacity="0" />
-                    <stop offset="50%" stop-color="#D9B137" stop-opacity="1" />
-                    <stop offset="100%" stop-color="#D9B137" stop-opacity="0" />
-                </linearGradient>
-                <!-- Soft blue fill for the wilaya shape -->
-                <linearGradient id="wilayaFill" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#2A4B9A" stop-opacity="0.45" />
-                    <stop offset="100%" stop-color="#0F1E46" stop-opacity="0.08" />
-                </linearGradient>
-                <!-- Glow filter for city beacon -->
-                <filter id="mapGlow" x="-30%" y="-30%" width="160%" height="160%">
-                    <feGaussianBlur stdDeviation="5" result="blur" />
-                    <feMerge>
-                        <feMergeNode in="blur" />
-                        <feMergeNode in="SourceGraphic" />
-                    </feMerge>
-                </filter>
-                <!-- Stronger glow for centre beacon -->
-                <filter id="beaconGlow" x="-60%" y="-60%" width="220%" height="220%">
-                    <feGaussianBlur stdDeviation="10" result="blur" />
-                    <feMerge>
-                        <feMergeNode in="blur" />
-                        <feMergeNode in="SourceGraphic" />
-                    </feMerge>
-                </filter>
-            </defs>
-
-            <!-- Wilaya outer boundary (stylized artistic shape) -->
-            <path class="map-route" d="M 400 40
-                   C 460 50, 530 70, 570 120
-                   C 615 175, 620 250, 600 310
-                   C 582 365, 545 395, 540 440
-                   C 534 488, 550 530, 530 570
-                   C 510 610, 465 640, 420 660
-                   C 375 680, 320 685, 275 670
-                   C 228 655, 185 620, 165 575
-                   C 142 525, 155 470, 145 420
-                   C 135 368, 100 330, 95 280
-                   C 88 225, 110 165, 150 120
-                   C 195 70, 260 40, 320 34
-                   Z" fill="url(#wilayaFill)" stroke="rgba(217,177,55,0.5)" stroke-width="1.8"
-                filter="url(#mapGlow)" />
-
-            <!-- Internal district divisions (dashed) -->
-            <g class="map-route" stroke="rgba(160,195,255,0.28)" stroke-width="0.9" fill="none" stroke-dasharray="7 5">
-                <line x1="350" y1="80" x2="300" y2="350" />
-                <line x1="430" y1="90" x2="500" y2="400" />
-                <line x1="200" y1="200" x2="580" y2="280" />
-                <line x1="160" y1="350" x2="600" y2="380" />
-                <line x1="250" y1="500" x2="560" y2="490" />
-                <line x1="130" y1="430" x2="350" y2="650" />
-                <line x1="470" y1="300" x2="540" y2="560" />
-                <!-- Extra district lines -->
-                <line x1="280" y1="120" x2="240" y2="400" />
-                <line x1="500" y1="150" x2="550" y2="480" />
-                <line x1="175" y1="290" x2="450" y2="340" />
-            </g>
-
-            <!-- Main road network (gold tint) -->
-            <g class="map-route" stroke="rgba(217,177,55,0.28)" stroke-width="2" fill="none">
-                <!-- N-S highway -->
-                <path d="M 350 80 Q 360 200 355 350 Q 350 480 330 660" />
-                <!-- E-W main road -->
-                <path d="M 130 310 Q 250 320 400 315 Q 530 310 630 305" />
-                <!-- Northern cross -->
-                <path d="M 180 180 Q 300 260 420 260 Q 500 260 570 280" />
-                <!-- Southern cross -->
-                <path d="M 200 470 Q 340 460 460 470 Q 540 478 580 490" />
-                <!-- Diagonal route -->
-                <path d="M 165 575 Q 240 520 310 480 Q 380 440 440 395" />
-                <!-- Northeast spur -->
-                <path d="M 500 150 Q 540 220 560 300" />
-                <!-- Southwest spur -->
-                <path d="M 175 395 Q 190 480 200 560" />
-            </g>
-
-            <!-- City beacon: Khenchela centre — pulsing gold ring + white core -->
-            <circle cx="355" cy="315" r="22" fill="rgba(217,177,55,0.08)" filter="url(#beaconGlow)">
-                <animate attributeName="r" values="18;28;18" dur="3.5s" repeatCount="indefinite" />
-                <animate attributeName="opacity" values="0.4;0.08;0.4" dur="3.5s" repeatCount="indefinite" />
-            </circle>
-            <circle cx="355" cy="315" r="10" fill="#D9B137" opacity="0.92" filter="url(#mapGlow)">
-                <animate attributeName="r" values="10;14;10" dur="3.5s" repeatCount="indefinite" />
-                <animate attributeName="opacity" values="0.92;0.5;0.92" dur="3.5s" repeatCount="indefinite" />
-            </circle>
-            <circle cx="355" cy="315" r="4" fill="#ffffff" opacity="0.98" />
-
-            <!-- Secondary city markers -->
-            <g fill="rgba(217,177,55,0.55)">
-                <circle cx="200" cy="220" r="5.5" />
-                <circle cx="500" cy="240" r="5.5" />
-                <circle cx="180" cy="430" r="5.5" />
-                <circle cx="510" cy="460" r="5.5" />
-                <circle cx="300" cy="600" r="5.5" />
-                <circle cx="450" cy="570" r="5.5" />
-                <!-- Extra minor markers -->
-                <circle cx="280" cy="130" r="4" />
-                <circle cx="520" cy="180" r="4" />
-                <circle cx="150" cy="320" r="4" />
-                <circle cx="580" cy="340" r="4" />
-            </g>
-
-            <!-- Gold connecting lines from centre to suburbs -->
-            <g stroke="url(#goldLine)" stroke-width="0.9" opacity="0.45">
-                <line x1="355" y1="315" x2="200" y2="220" />
-                <line x1="355" y1="315" x2="500" y2="240" />
-                <line x1="355" y1="315" x2="180" y2="430" />
-                <line x1="355" y1="315" x2="510" y2="460" />
-                <line x1="355" y1="315" x2="300" y2="600" />
-                <line x1="355" y1="315" x2="450" y2="570" />
-                <line x1="355" y1="315" x2="280" y2="130" />
-                <line x1="355" y1="315" x2="520" y2="180" />
-            </g>
-
-            <!-- Decorative outer ring -->
-            <rect x="10" y="10" width="780" height="880" rx="32" fill="none" stroke="rgba(217,177,55,0.1)"
-                stroke-width="1" stroke-dasharray="14 7" />
-
-            <!-- Inner decorative ring -->
-            <rect x="30" y="30" width="740" height="840" rx="28" fill="none" stroke="rgba(140,180,255,0.06)"
-                stroke-width="0.8" stroke-dasharray="4 10" />
-        </svg>
     </div>
 
     <!-- BACKGROUND LAYER 3 — Gold scan-line accent (vertical) -->
@@ -1485,21 +1369,21 @@
                         <!-- Badge: List number -->
                         <div class="card-navy rounded-xl px-4 py-2.5 flex items-center gap-3 react-motion">
                             <div
-                                class="bg-jj-gold text-jj-dark-blue w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center font-black text-xl md:text-2xl">
+                                class="bg-jj-gold text-jj-dark-blue w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center font-black text-xl md:text-2xl" id="dyn-list-num-badge">
                                 14</div>
                             <div>
                                 <p class="text-[10px] md:text-xs text-white/50">القائمة الانتخابية</p>
-                                <p class="font-bold text-xs md:text-sm text-jj-gold">رقم 14</p>
+                                <p class="font-bold text-xs md:text-sm text-jj-gold" id="dyn-list-num-text">رقم 14</p>
                             </div>
                         </div>
                         <!-- Badge: Candidate number -->
                         <div class="card-navy rounded-xl px-4 py-2.5 flex items-center gap-3">
                             <div
-                                class="bg-white/15 text-white w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center font-black text-xl md:text-2xl">
+                                class="bg-white/15 text-white w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center font-black text-xl md:text-2xl" id="dyn-candidate-num-badge">
                                 2</div>
                             <div>
                                 <p class="text-[10px] md:text-xs text-white/50">رقم المترشح</p>
-                                <p class="font-bold text-xs md:text-sm text-white">رقم 2</p>
+                                <p class="font-bold text-xs md:text-sm text-white" id="dyn-candidate-num-text">رقم 2</p>
                             </div>
                         </div>
                         <!-- Badge: Letter -->
@@ -1520,7 +1404,7 @@
                         class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-4 md:mb-6 !leading-[1.3] scroll-animate">
                         جيل جديد،<span class="text-jj-gold"> فكر جديد</span>،<br class="hidden md:block">جزائر جديدة
                     </h2>
-                    <p class="text-base md:text-lg text-white/70 mb-6 md:mb-8 leading-relaxed max-w-xl scroll-animate">
+                    <p id="dyn-hero-subtitle" class="text-base md:text-lg text-white/70 mb-6 md:mb-8 leading-relaxed max-w-xl scroll-animate">
                         أستاذ جامعي، رئيس قسم العلوم والتكنولوجيا بجامعة خنشلة، نائب مدير الجامعة سابقاً. معاً نُنشئ
                         مستقبلاً أفضل لجيلنا وأجيالنا القادمة.
                     </p>
@@ -1559,15 +1443,18 @@
                     <!-- Candidate Photo Frame Card -->
                     <div class="portrait-frame-card">
                         <!-- Top Accent Badge -->
-                        <div class="absolute top-4 right-4 bg-jj-gold text-jj-dark-blue font-black px-3.5 py-1.5 rounded-xl text-[10px] md:text-xs z-20 shadow-md">
+                        <div class="absolute top-4 right-4 bg-jj-gold text-jj-dark-blue font-black px-3.5 py-1.5 rounded-xl text-[10px] md:text-xs z-20 shadow-md" id="dyn-portrait-badge">
                             القائمة 14 &bull; المترشح 2
                         </div>
 
                         <!-- Algerian Flag Ribbon Accent on Top-Left -->
-                        <div class="absolute top-4 left-4 flex gap-1 z-20">
-                            <span class="w-2.5 h-4 bg-green-600 rounded-sm"></span>
-                            <span class="w-2.5 h-4 bg-white rounded-sm flex items-center justify-center text-[6px] text-red-600 font-bold">*</span>
-                            <span class="w-2.5 h-4 bg-red-600 rounded-sm"></span>
+                        <div class="absolute top-4 left-4 z-20 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 60" class="w-8 h-5 rounded-md shadow-lg border border-white/10">
+                                <rect width="45" height="60" fill="#006233"/>
+                                <rect x="45" width="45" height="60" fill="#fff"/>
+                                <path d="M48.75 22.126a9 9 0 1 0 0 15.748 7.5 7.5 0 1 1 0-15.748z" fill="#d21034"/>
+                                <polygon points="51 25.044 52.88 30.826 47.88 27.202 54.12 27.202 49.12 30.826" fill="#d21034"/>
+                            </svg>
                         </div>
                         
                         <!-- Candidate Photo -->
@@ -1575,8 +1462,8 @@
 
                         <!-- Bottom Floating Info Badge -->
                         <div class="portrait-frame-badge absolute bottom-4 left-4 right-4 p-3.5 rounded-2xl bg-jj-dark-blue/90 border border-jj-gold/30 text-center z-20 shadow-xl backdrop-blur-md">
-                            <h3 class="text-white font-black text-base md:text-lg leading-tight">الأستاذ حناشي بوزيد</h3>
-                            <p class="text-jj-gold text-[10px] md:text-xs font-bold mt-1">مرشح حزب جيل جديد &mdash; ولاية خنشلة</p>
+                            <h3 class="dyn-candidate-name text-white font-black text-base md:text-lg leading-tight">الأستاذ حناشي بوزيد</h3>
+                            <p id="dyn-candidate-role" class="text-jj-gold text-[10px] md:text-xs font-bold mt-1">مرشح حزب جيل جديد &mdash; ولاية خنشلة</p>
                         </div>
                     </div>
                 </div>
@@ -1599,9 +1486,8 @@
 
                     <!-- Teaser Text + CTA -->
                     <div class="order-1 md:order-2 md:col-span-2 scroll-animate">
-                        <h4 class="text-jj-gold font-bold mb-2 text-sm md:text-base">من هو حناشي بوزيد؟</h4>
-                        <h2 class="text-2xl md:text-3xl font-black mb-4 md:mb-6 text-white">أستاذ جامعي ومهندس متميز
-                        </h2>
+                        <h4 id="dyn-about-title" class="text-jj-gold font-bold mb-2 text-sm md:text-base">من هو حناشي بوزيد؟</h4>
+                        <h2 id="dyn-about-subtitle" class="text-2xl md:text-3xl font-black mb-4 md:mb-6 text-white">أستاذ جامعي ومهندس متميز</h2>
 
                         <!-- Key highlights grid -->
                         <div class="grid sm:grid-cols-3 gap-3 mb-7">
@@ -1622,7 +1508,7 @@
                             </div>
                         </div>
 
-                        <p class="text-white/65 text-sm md:text-base leading-relaxed mb-8">
+                        <p id="dyn-about-text" class="text-white/65 text-sm md:text-base leading-relaxed mb-8">
                             مسيرة علمية ومهنية حافلة بالإنجازات — من مهندس متخرج بامتياز إلى رئيس قسم ونائب مدير جامعة،
                             مروراً بتجربة متكاملة في ميدان التكوين والإدارة والبحث العلمي.
                         </p>
@@ -1637,6 +1523,16 @@
                     </div>
                 </div>
             </div>
+        </section>
+
+        <!-- Patriotic Banner Section -->
+        <section class="py-10 bg-jj-navy/50 border-y border-jj-gold/10 relative overflow-hidden scroll-animate">
+            <div class="container mx-auto px-4 text-center relative z-10 flex flex-col items-center justify-center gap-4">
+                <img src="algeria-flag-wavy.png" alt="العلم الجزائري" class="w-48 md:w-56 h-auto rounded-xl shadow-xl border border-white/10 hover:scale-105 transition-transform duration-300">
+                <h3 class="text-xl md:text-2xl lg:text-3xl font-black text-jj-gold tracking-wide leading-relaxed">تحيا الجزائر برجالها</h3>
+            </div>
+            <!-- Decorative light orb -->
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-jj-gold/5 rounded-full blur-3xl pointer-events-none"></div>
         </section>
 
         <!-- Program Section -->
@@ -1887,22 +1783,22 @@
                         <div class="w-10 h-10 bg-jj-dark-blue rounded-lg flex items-center justify-center text-white">
                             <i class="fas fa-hands-helping"></i>
                         </div>
-                        <h2 class="text-xl font-bold">الأستاذ حناشي بوزيد</h2>
+                        <h2 class="dyn-candidate-name text-xl font-bold">الأستاذ حناشي بوزيد</h2>
                     </div>
                     <p class="text-gray-400 text-sm leading-relaxed mb-6">
                         جيل جديد، فكر جديد، جزائر جديدة. معاً نبني مستقبل أفضل لأبناء وآبناء خنشلة.
                     </p>
                     <div class="flex gap-4">
-                        <a href="#"
+                        <a id="link-facebook" href="#"
                             class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-jj-dark-blue transition-colors"><i
                                 class="fab fa-facebook-f"></i></a>
-                        <a href="https://www.facebook.com/yazid.yazod"
+                        <a id="link-twitter" href="https://www.facebook.com/yazid.yazod"
                             class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-jj-dark-blue transition-colors"><i
                                 class="fab fa-twitter"></i></a>
-                        <a href="#"
+                        <a id="link-whatsapp" href="#"
                             class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-jj-dark-blue transition-colors"><i
-                                class="fab fa-instagram"></i></a>
-                        <a href="#"
+                                class="fab fa-whatsapp"></i></a>
+                        <a id="link-youtube" href="#"
                             class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-jj-dark-blue transition-colors"><i
                                 class="fab fa-youtube"></i></a>
                     </div>
@@ -2158,7 +2054,7 @@
                         <div class="relative">
                             <i
                                 class="fas fa-envelope absolute right-4 top-1/2 -translate-y-1/2 text-jj-dark-blue/60"></i>
-                            <input type="email" id="voter-email" placeholder="البريد الإلكتروني" required
+                            <input type="email" id="voter-email" placeholder="البريد الإلكتروني"
                                 class="w-full pr-12 pl-4 py-4 rounded-2xl border border-gray-200 bg-gray-50 text-gray-800 focus:bg-white focus:border-jj-dark-blue focus:ring-4 focus:ring-jj-dark-blue/10 outline-none transition-all text-right">
                         </div>
                         <div class="relative">
@@ -2367,7 +2263,7 @@
         const heroVoteProgress = document.getElementById('hero-vote-progress');
         const voteMsg = document.getElementById('vote-msg');
 
-        const BASELINE_COUNT = 1152;
+        const BASELINE_COUNT = 631;
         let currentTotalCount = BASELINE_COUNT;
 
         // Fetch current count on load with cascade fallbacks
@@ -2382,7 +2278,7 @@
                         .select('*', { count: 'exact', head: true });
 
                     if (!error && count !== null) {
-                        currentTotalCount = count;
+                        currentTotalCount = BASELINE_COUNT + count;
                         console.log('Loaded count from Supabase:', currentTotalCount);
                         renderVoteCount(currentTotalCount);
                         return;
@@ -2423,6 +2319,132 @@
         }
 
         loadVoteCount();
+
+        async function loadSettings() {
+            if (!sb) return;
+            try {
+                const { data, error } = await sb.from('settings').select('key, value');
+                if (!error && data) {
+                    const settings = {};
+                    data.forEach(item => { settings[item.key] = item.value; });
+
+                    if (settings.candidate_name) {
+                        document.querySelectorAll('.dyn-candidate-name').forEach(el => {
+                            el.innerText = settings.candidate_name;
+                        });
+                        if (settings.hero_title) {
+                            document.title = settings.hero_title;
+                        } else {
+                            document.title = `حزب جيل جديد | ${settings.candidate_name}`;
+                        }
+                    }
+                    if (settings.list_num) {
+                        const listBadge = document.getElementById('dyn-list-num-badge');
+                        if (listBadge) listBadge.innerText = settings.list_num;
+                        const listText = document.getElementById('dyn-list-num-text');
+                        if (listText) listText.innerText = `رقم ${settings.list_num}`;
+                    }
+                    if (settings.candidate_num) {
+                        const candBadge = document.getElementById('dyn-candidate-num-badge');
+                        if (candBadge) candBadge.innerText = settings.candidate_num;
+                        const candText = document.getElementById('dyn-candidate-num-text');
+                        if (candText) candText.innerText = `رقم ${settings.candidate_num}`;
+                    }
+                    if (settings.list_num && settings.candidate_num) {
+                        const portBadge = document.getElementById('dyn-portrait-badge');
+                        if (portBadge) portBadge.innerHTML = `القائمة ${settings.list_num} &bull; المترشح ${settings.candidate_num}`;
+                    }
+                    if (settings.hero_subtitle) {
+                        const heroSub = document.getElementById('dyn-hero-subtitle');
+                        if (heroSub) heroSub.innerText = settings.hero_subtitle;
+                    }
+                    if (settings.about_title) {
+                        const aboutTitle = document.getElementById('dyn-about-title');
+                        if (aboutTitle) aboutTitle.innerText = settings.about_title;
+                    }
+                    if (settings.about_subtitle) {
+                        const aboutSub = document.getElementById('dyn-about-subtitle');
+                        if (aboutSub) aboutSub.innerText = settings.about_subtitle;
+                    }
+                    if (settings.about_text) {
+                        const aboutText = document.getElementById('dyn-about-text');
+                        if (aboutText) aboutText.innerText = settings.about_text;
+                    }
+                    if (settings.social_facebook) {
+                        const linkFb = document.getElementById('link-facebook');
+                        if (linkFb) linkFb.setAttribute('href', settings.social_facebook);
+                    }
+                    if (settings.social_twitter) {
+                        const linkTw = document.getElementById('link-twitter');
+                        if (linkTw) linkTw.setAttribute('href', settings.social_twitter);
+                    }
+                    if (settings.social_whatsapp) {
+                        const linkWa = document.getElementById('link-whatsapp');
+                        if (linkWa) linkWa.setAttribute('href', settings.social_whatsapp);
+                    }
+                    if (settings.social_youtube) {
+                        const linkYt = document.getElementById('link-youtube');
+                        if (linkYt) linkYt.setAttribute('href', settings.social_youtube);
+                    }
+                }
+            } catch (err) {
+                console.error('Error loading settings:', err);
+            }
+        }
+
+        async function loadNews() {
+            if (!sb) return;
+            try {
+                const { data, error } = await sb.from('articles').select('*').order('created_at', { ascending: false });
+                if (!error && data && data.length > 0) {
+                    const newsGrid = document.getElementById('news-grid');
+                    const extraNews = document.getElementById('extra-news');
+                    if (!newsGrid) return;
+
+                    newsGrid.innerHTML = '';
+                    if (extraNews) extraNews.innerHTML = '';
+
+                    data.forEach((item, index) => {
+                        const itemHtml = `
+                            <a href="news.html?id=${item.id}" class="group cursor-pointer news-item">
+                                <div class="overflow-hidden rounded-2xl mb-4">
+                                    <img src="${item.image_url}" 
+                                        onload="this.classList.remove('opacity-0'); this.classList.add('opacity-100');" 
+                                        onerror="this.onerror=null; this.src='./img1.jpg'; this.classList.remove('opacity-0'); this.classList.add('opacity-100');" 
+                                        alt="${item.title} - الأستاذ حناشي بوزيد - ولاية خنشلة"
+                                        class="opacity-0 transition-opacity duration-500 w-full h-48 object-cover group-hover:scale-110">
+                                </div>
+                                <span class="text-jj-dark-blue text-xs font-bold uppercase tracking-wider">${item.category}</span>
+                                <h3 class="text-lg font-bold mt-2 group-hover:text-jj-dark-blue transition-colors">${item.title}</h3>
+                                <p class="text-sm text-dz-slate/60 mt-2">${item.description.substring(0, 100)}...</p>
+                            </a>
+                        `;
+
+                        if (index < 3) {
+                            newsGrid.innerHTML += itemHtml;
+                        } else {
+                            if (extraNews) {
+                                extraNews.innerHTML += itemHtml;
+                            }
+                        }
+                    });
+
+                    const showAllNewsBtn = document.getElementById('show-all-news-btn');
+                    if (showAllNewsBtn) {
+                        if (data.length <= 3) {
+                            showAllNewsBtn.style.display = 'none';
+                        } else {
+                            showAllNewsBtn.style.display = 'inline-flex';
+                        }
+                    }
+                }
+            } catch (err) {
+                console.error('Error loading news:', err);
+            }
+        }
+
+        loadSettings();
+        loadNews();
 
         function updateProgressBar(count) {
             const target = 2500;

@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم | الأستاذ حناشي بوزيد</title>
+
+    <!-- Google Fonts: Cairo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Supabase JS Client SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'jj-dark-blue': '#0F1E46',
+                        'jj-blue': '#162B5E',
+                        'jj-navy': '#0A142F',
+                        'jj-gold': '#D9B137',
+                        'jj-gold-light': '#F0CB5A',
+                        'dz-white': '#FFFFFF',
+                        'dz-slate': '#E8EDF5',
+                    },
+                    fontFamily: {
+                        'cairo': ['Cairo', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #0F1E46;
+            color: #E8EDF5;
+            overflow-x: hidden;
+        }
+
+        #bg-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -10;
+            pointer-events: none;
+            background: radial-gradient(ellipse 140% 100% at 50% 0%,
+                    rgba(22, 43, 94, 0.4) 0%,
+                    rgba(10, 20, 47, 0.9) 100%);
+        }
+
+        .dashboard-card {
+            background: rgba(22, 43, 94, 0.35);
+            border: 1px solid rgba(217, 177, 55, 0.15);
+            backdrop-blur-md: 10px;
+        }
+
+        .tab-btn.active {
+            background-color: #D9B137;
+            color: #0F1E46;
+        }
+
+        .tab-btn:not(.active) {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: #E8EDF5;
+        }
+
+        .tab-btn:not(.active):hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen">
+    <div id="bg-canvas"></div>
+
+    <!-- ── AUTHENTICATION MODAL / SCREEN ───────────────────────────────────── -->
+    <div id="auth-container" class="flex min-h-screen items-center justify-center px-4 py-12 relative z-50">
+        <div class="w-full max-w-md p-8 rounded-3xl dashboard-card shadow-2xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-jj-gold/5 rounded-full -mr-16 -mt-16"></div>
+            
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-jj-gold/15 rounded-2xl flex items-center justify-center text-jj-gold text-3xl mx-auto mb-4 border border-jj-gold/20">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h2 class="text-2xl font-black text-white">لوحة تحكم الحملة</h2>
+                <p class="text-gray-400 text-sm mt-1">يرجى تسجيل الدخول للوصول للإعدادات والأخبار</p>
+            </div>
+
+            <form id="login-form" class="space-y-5">
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 mb-2">البريد الإلكتروني</label>
+                    <div class="relative">
+                        <i class="fas fa-envelope absolute right-4 top-1/2 -translate-y-1/2 text-white/40"></i>
+                        <input type="email" id="login-email" required placeholder="admin@example.com"
+                            class="w-full pr-11 pl-4 py-3 bg-jj-navy/50 border border-white/10 rounded-xl text-white outline-none focus:border-jj-gold focus:ring-2 focus:ring-jj-gold/15 transition-all text-left">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 mb-2">كلمة المرور</label>
+                    <div class="relative">
+                        <i class="fas fa-key absolute right-4 top-1/2 -translate-y-1/2 text-white/40"></i>
+                        <input type="password" id="login-password" required placeholder="••••••••"
+                            class="w-full pr-11 pl-4 py-3 bg-jj-navy/50 border border-white/10 rounded-xl text-white outline-none focus:border-jj-gold focus:ring-2 focus:ring-jj-gold/15 transition-all text-left">
+                    </div>
+                </div>
+
+                <div id="login-error" class="hidden text-sm text-red-400 bg-red-900/20 p-3 rounded-xl border border-red-900/30 text-center"></div>
+
+                <button type="submit" id="login-btn"
+                    class="w-full bg-jj-gold hover:bg-jj-gold-light text-jj-dark-blue font-black py-4 rounded-xl shadow-lg shadow-jj-gold/15 transition-all flex items-center justify-center gap-2">
+                    <span>دخول لوحة التحكم</span>
+                    <i class="fas fa-sign-in-alt"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ── DASHBOARD CONTAINER ─────────────────────────────────────────────── -->
+    <div id="dashboard-container" class="hidden min-h-screen flex flex-col relative z-10">
+        <!-- Top Header -->
+        <header class="border-b border-white/10 bg-jj-navy/40 backdrop-blur-md">
+            <div class="container mx-auto px-4 md:px-6 py-5 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-jj-gold rounded-xl flex items-center justify-center text-jj-dark-blue font-black text-xl shadow-md">
+                        <i class="fas fa-sliders-h"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-black text-lg md:text-xl text-white">لوحة الإدارة والمحتوى</h1>
+                        <p class="text-[10px] md:text-xs text-jj-gold font-bold">الحملة الانتخابية للأستاذ حناشي بوزيد</p>
+                    </div>
+                </div>
+
+                <button id="logout-btn" class="px-5 py-2.5 rounded-xl border border-red-500/20 text-red-400 hover:bg-red-500/10 text-sm font-bold transition-all flex items-center gap-2">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>خروج</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <div class="container mx-auto px-4 md:px-6 pt-8">
+            <div class="flex flex-wrap gap-3 md:gap-4 border-b border-white/5 pb-4">
+                <button id="btn-tab-news" class="tab-btn active px-6 py-3.5 rounded-xl font-bold transition-all flex items-center gap-2">
+                    <i class="fas fa-newspaper"></i>
+                    <span>أخبار الحملة والزيارات</span>
+                </button>
+                <button id="btn-tab-votes" class="tab-btn px-6 py-3.5 rounded-xl font-bold transition-all flex items-center gap-2">
+                    <i class="fas fa-vote-yea"></i>
+                    <span>داعمي الحملة (التوقيعات)</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <main class="container mx-auto px-4 md:px-6 py-8 flex-1">
+            <!-- Alert Notifications -->
+            <div id="status-alert" class="hidden fixed bottom-6 left-6 z-50 max-w-sm p-4 rounded-2xl shadow-2xl transition-all duration-300 border"></div>
+
+            <!-- Tab 2: News Manager -->
+            <section id="tab-news-content" class="space-y-6">
+                <!-- Blog Manager Header -->
+                <div class="flex justify-between items-center">
+                    <h2 class="text-xl font-black text-white flex items-center gap-3">
+                        <i class="fas fa-newspaper text-jj-gold"></i>
+                        <span>قائمة الأخبار والمداومات الحالية</span>
+                    </h2>
+                    <button id="add-news-btn"
+                        class="bg-jj-gold hover:bg-jj-gold-light text-jj-dark-blue font-black px-5 py-2.5 rounded-xl shadow-md transition-all flex items-center gap-2 text-sm">
+                        <i class="fas fa-plus"></i>
+                        <span>إضافة خبر جديد</span>
+                    </button>
+                </div>
+
+                <!-- Blog List Grid -->
+                <div id="admin-news-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Dynamic Items will load here -->
+                    <div class="col-span-full text-center py-12">
+                        <i class="fas fa-circle-notch fa-spin text-4xl text-jj-gold mb-3"></i>
+                        <p class="text-gray-400">جاري تحميل الأخبار والمداومات...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab 3: Votes Viewer -->
+            <section id="tab-votes-content" class="hidden space-y-6">
+                <!-- Dynamic KPI Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <!-- KPI Card 1: Total Supporters -->
+                    <div class="dashboard-card p-6 rounded-3xl flex items-center gap-5 shadow-lg border border-jj-gold/15 relative overflow-hidden">
+                        <div class="w-14 h-14 bg-jj-gold/10 text-jj-gold rounded-2xl flex items-center justify-center text-2xl shadow-inner border border-jj-gold/20">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-400 font-bold mb-1">إجمالي الداعمين المسجلين</p>
+                            <h3 id="kpi-total-voters" class="text-3xl font-black text-white">0</h3>
+                        </div>
+                        <div class="absolute top-0 right-0 w-24 h-24 bg-jj-gold/5 rounded-full -mr-8 -mt-8"></div>
+                    </div>
+                    <!-- KPI Card 2: Registered Today -->
+                    <div class="dashboard-card p-6 rounded-3xl flex items-center gap-5 shadow-lg border border-jj-gold/15 relative overflow-hidden">
+                        <div class="w-14 h-14 bg-green-500/10 text-green-400 rounded-2xl flex items-center justify-center text-2xl shadow-inner border border-green-500/20">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-400 font-bold mb-1">المسجلون اليوم</p>
+                            <h3 id="kpi-today-voters" class="text-3xl font-black text-white">0</h3>
+                        </div>
+                        <div class="absolute top-0 right-0 w-24 h-24 bg-green-500/5 rounded-full -mr-8 -mt-8"></div>
+                    </div>
+                </div>
+
+                <!-- Control Bar -->
+                <div class="flex flex-col sm:flex-row justify-between items-center gap-4 bg-jj-navy/40 p-5 rounded-2xl border border-white/5 shadow-md">
+                    <div class="relative w-full sm:max-w-md">
+                        <i class="fas fa-search absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" id="voters-search-input" placeholder="ابحث باسم الداعم أو رقم الهاتف..."
+                            class="w-full pr-11 pl-4 py-3 bg-jj-navy/50 border border-white/10 rounded-xl text-white outline-none focus:border-jj-gold focus:ring-2 focus:ring-jj-gold/15 transition-all text-sm">
+                    </div>
+                    <div class="text-xs text-jj-gold font-bold flex items-center gap-2">
+                        <i class="fas fa-info-circle"></i>
+                        <span>عرض قائمة الداعمين للقراءة فقط</span>
+                    </div>
+                </div>
+
+                <!-- Data Table -->
+                <div class="dashboard-card rounded-3xl shadow-xl overflow-hidden border border-white/5">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-right border-collapse text-sm">
+                            <thead>
+                                <tr class="bg-jj-navy/60 border-b border-white/10 text-gray-400 font-bold">
+                                    <th class="px-6 py-4">الاسم الكامل</th>
+                                    <th class="px-6 py-4">رقم الهاتف</th>
+                                    <th class="px-6 py-4">البريد الإلكتروني</th>
+                                    <th class="px-6 py-4">تاريخ التسجيل</th>
+                                </tr>
+                            </thead>
+                            <tbody id="voters-table-body" class="divide-y divide-white/5">
+                                <!-- Dynamic rows loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Empty State -->
+                    <div id="voters-empty-state" class="hidden text-center py-16">
+                        <i class="fas fa-folder-open text-5xl text-gray-500 mb-4"></i>
+                        <p class="text-gray-400">لم يتم العثور على أي داعمين مطابِقين لخيارات البحث</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- ── ARTICLE WRITE/EDIT MODAL ────────────────────────────────────────── -->
+    <div id="article-modal" class="fixed inset-0 z-50 flex items-center justify-center px-4 hidden">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-jj-navy/85 backdrop-blur-sm" id="article-modal-backdrop"></div>
+        <!-- Content -->
+        <div class="w-full max-w-2xl p-6 md:p-8 rounded-3xl dashboard-card shadow-2xl relative overflow-y-auto max-h-[90vh] z-10">
+            <h3 class="text-xl font-black text-white mb-6 border-b border-white/5 pb-4 flex justify-between items-center">
+                <span id="modal-article-title">إضافة مقال أو نشاط ميداني</span>
+                <button class="close-article-modal text-gray-400 hover:text-white"><i class="fas fa-times-circle text-2xl"></i></button>
+            </h3>
+
+            <form id="article-form" class="space-y-5">
+                <input type="hidden" id="article-db-id">
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 mb-2">التصنيف أو نوع النشاط</label>
+                    <input type="text" id="article-category" placeholder="مداومة / زيارة ميدانية" required
+                        class="w-full px-4 py-3 bg-jj-navy/50 border border-white/10 rounded-xl text-white outline-none focus:border-jj-gold transition-all">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 mb-2">عنوان الخبر</label>
+                    <input type="text" id="article-title" placeholder="أدخل عنوان مقال المداومة" required
+                        class="w-full px-4 py-3 bg-jj-navy/50 border border-white/10 rounded-xl text-white outline-none focus:border-jj-gold transition-all">
+                </div>
+
+                <!-- Storage Photo Uploader -->
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 mb-2">صورة الخبر</label>
+                    <div class="flex gap-4 items-center">
+                        <div class="flex-1">
+                            <input type="text" id="article-image-url" readonly placeholder="رابط صورة المقال المرفوعة" required
+                                class="w-full px-4 py-3 bg-jj-navy/50 border border-white/10 rounded-xl text-white/50 outline-none text-left mb-2 text-xs">
+                            <input type="file" id="article-image-file" accept="image/*"
+                                class="block w-full text-xs text-gray-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-white/10 file:text-white hover:file:bg-white/20 file:cursor-pointer">
+                        </div>
+                        <div class="w-24 h-24 rounded-2xl bg-jj-navy/50 border border-white/10 overflow-hidden flex items-center justify-center flex-shrink-0" id="article-image-preview-container">
+                            <i class="far fa-image text-3xl text-white/30" id="article-image-placeholder-icon"></i>
+                            <img id="article-image-preview" class="w-full h-full object-cover hidden">
+                        </div>
+                    </div>
+                    <div id="upload-progress-text" class="hidden text-xs text-jj-gold font-bold mt-1"><i class="fas fa-spinner fa-spin mr-1"></i> جاري رفع الصورة لسحابة Supabase...</div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 mb-2">تفاصيل محتوى الخبر</label>
+                    <textarea id="article-content" rows="6" required placeholder="اكتب تفاصيل المداومة واللقاء الجواري هنا..."
+                        class="w-full px-4 py-3 bg-jj-navy/50 border border-white/10 rounded-xl text-white outline-none focus:border-jj-gold transition-all leading-relaxed"></textarea>
+                </div>
+
+                <div class="flex justify-end gap-3 pt-4 border-t border-white/5">
+                    <button type="button" class="close-article-modal px-6 py-3 rounded-xl border border-white/10 hover:bg-white/5 text-sm font-bold text-white transition-all">إلغاء</button>
+                    <button type="submit" id="save-article-btn"
+                        class="bg-jj-gold hover:bg-jj-gold-light text-jj-dark-blue font-black px-8 py-3 rounded-xl shadow-lg transition-all flex items-center gap-2">
+                        <i class="fas fa-paper-plane"></i>
+                        <span>نشر المقال</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ── CORE LOGIC & CONTROLLER ─────────────────────────────────────────── -->
+    <script>
+        // Supabase Credentials Configuration
+        const SUPABASE_URL = 'https://sbvnrgjseqxuvjlcfnrp.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNidm5yZ2pzZXF4dXZqbGNmbnJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyODcyNTgsImV4cCI6MjA5Njg2MzI1OH0.ylPtYMwcnp2tYViiGKHH_r0biw4ui6E2fyEqiNztQAU';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const authContainer = document.getElementById('auth-container');
+        const dashboardContainer = document.getElementById('dashboard-container');
+        const loginForm = document.getElementById('login-form');
+        const loginBtn = document.getElementById('login-btn');
+        const loginError = document.getElementById('login-error');
+        const logoutBtn = document.getElementById('logout-btn');
+
+        // Status alert utility
+        function showNotification(message, type = 'success') {
+            const alert = document.getElementById('status-alert');
+            alert.innerText = message;
+            alert.className = `fixed bottom-6 left-6 z-50 max-w-sm p-4 rounded-2xl shadow-2xl transition-all duration-300 border ${
+                type === 'success' 
+                ? 'bg-green-950/80 border-green-800 text-green-200' 
+                : 'bg-red-950/80 border-red-800 text-red-200'
+            }`;
+            alert.classList.remove('hidden');
+            setTimeout(() => alert.classList.add('hidden'), 4000);
+        }
+
+        // ── Auth Handler ────────────────────────────────────────────────────────
+        async function checkAuthState() {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (session) {
+                authContainer.classList.add('hidden');
+                dashboardContainer.classList.remove('hidden');
+                loadNewsList();
+                loadVotesList();
+            } else {
+                authContainer.classList.remove('hidden');
+                dashboardContainer.classList.add('hidden');
+            }
+        }
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> جاري التحقق...';
+            loginError.classList.add('hidden');
+
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+
+            if (error) {
+                loginError.innerText = 'فشل تسجيل الدخول: يرجى التحقق من البريد أو كلمة المرور';
+                loginError.classList.remove('hidden');
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '<span>دخول لوحة التحكم</span> <i class="fas fa-sign-in-alt"></i>';
+            } else {
+                showNotification('تم تسجيل الدخول بنجاح');
+                checkAuthState();
+            }
+        });
+
+        logoutBtn.addEventListener('click', async () => {
+            await supabaseClient.auth.signOut();
+            showNotification('تم تسجيل الخروج');
+            checkAuthState();
+        });
+
+        // ── Tabs navigation ───────────────────────────────────────────────────
+        const tabNewsBtn = document.getElementById('btn-tab-news');
+        const tabVotesBtn = document.getElementById('btn-tab-votes');
+        const tabNewsContent = document.getElementById('tab-news-content');
+        const tabVotesContent = document.getElementById('tab-votes-content');
+
+        tabNewsBtn.addEventListener('click', () => {
+            tabNewsBtn.classList.add('active');
+            tabVotesBtn.classList.remove('active');
+            tabNewsContent.classList.remove('hidden');
+            tabVotesContent.classList.add('hidden');
+            loadNewsList();
+        });
+
+        tabVotesBtn.addEventListener('click', () => {
+            tabVotesBtn.classList.add('active');
+            tabNewsBtn.classList.remove('active');
+            tabVotesContent.classList.remove('hidden');
+            tabNewsContent.classList.add('hidden');
+            loadVotesList();
+        });
+
+
+        // ── News CRUD ─────────────────────────────────────────────────────────
+        async function loadNewsList() {
+            const container = document.getElementById('admin-news-grid');
+            container.innerHTML = `
+                <div class="col-span-full text-center py-12">
+                    <i class="fas fa-circle-notch fa-spin text-4xl text-jj-gold mb-3"></i>
+                    <p class="text-gray-400">جاري تحميل الأخبار والمداومات...</p>
+                </div>`;
+
+            const { data, error } = await supabaseClient.from('articles').select('*').order('created_at', { ascending: false });
+
+            if (error) {
+                container.innerHTML = `<div class="col-span-full text-center py-12 text-red-400">حدث خطأ أثناء جلب البيانات: ${error.message}</div>`;
+                return;
+            }
+
+            if (data.length === 0) {
+                container.innerHTML = `<div class="col-span-full text-center py-12 text-gray-400">لا يوجد أي أخبار حالياً، اضغط على زر الإضافة لنشر أول خبر.</div>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            data.forEach(item => {
+                const imgUrl = item.image_url.startsWith('http') ? item.image_url : `./${item.image_url}`;
+                const dateStr = item.created_at 
+                    ? new Date(item.created_at).toLocaleDateString('ar-DZ', { day: 'numeric', month: 'long', year: 'numeric' }) 
+                    : '19 جوان 2026';
+                container.innerHTML += `
+                    <div class="dashboard-card rounded-2xl overflow-hidden border border-white/5 shadow-lg flex flex-col justify-between">
+                        <div class="h-44 overflow-hidden relative border-b border-white/5">
+                            <img src="${imgUrl}" onerror="this.onerror=null; this.src='./img1.jpg';" class="w-full h-full object-cover">
+                            <span class="absolute top-3 right-3 bg-jj-dark-blue text-jj-gold px-3 py-1 rounded-lg text-xs font-bold border border-jj-gold/20">${item.category}</span>
+                        </div>
+                        <div class="p-5 flex-1 flex flex-col justify-between">
+                            <div>
+                                <h3 class="font-bold text-white mb-2 line-clamp-1">${item.title}</h3>
+                                <p class="text-xs text-gray-400 mb-4">${dateStr}</p>
+                                <p class="text-sm text-gray-300 line-clamp-3 mb-6">${item.description}</p>
+                            </div>
+                            <div class="flex gap-2 border-t border-white/5 pt-4">
+                                <button onclick="editArticle('${item.id}')" class="flex-1 bg-white/10 hover:bg-white/20 text-white font-bold py-2 rounded-xl text-xs transition-all flex items-center justify-center gap-1">
+                                    <i class="fas fa-edit"></i> تعديل
+                                </button>
+                                <button onclick="deleteArticle('${item.id}')" class="bg-red-500/10 hover:bg-red-500/25 border border-red-500/20 text-red-400 font-bold px-4 py-2 rounded-xl text-xs transition-all flex items-center justify-center gap-1">
+                                    <i class="fas fa-trash-alt"></i> حذف
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // ── Image Uploader ─────────────────────────────────────────────────────
+        const imageFileInput = document.getElementById('article-image-file');
+        const imageUrlInput = document.getElementById('article-image-url');
+        const imagePreview = document.getElementById('article-image-preview');
+        const imagePlaceholderIcon = document.getElementById('article-image-placeholder-icon');
+        const uploadProgressText = document.getElementById('upload-progress-text');
+
+        imageFileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            uploadProgressText.classList.remove('hidden');
+            imageFileInput.disabled = true;
+
+            const fileExt = file.name.split('.').pop();
+            const fileName = `news_${Date.now()}.${fileExt}`;
+
+            // Upload directly to Supabase Storage articles bucket
+            const { data, error } = await supabaseClient.storage
+                .from('articles')
+                .upload(fileName, file);
+
+            if (error) {
+                showNotification('حدث خطأ أثناء رفع الصورة: ' + error.message, 'error');
+                console.error('Upload error:', error);
+                uploadProgressText.classList.add('hidden');
+                imageFileInput.disabled = false;
+                return;
+            }
+
+            // Get Public URL
+            const { data: { publicUrl } } = supabaseClient.storage
+                .from('articles')
+                .getPublicUrl(fileName);
+
+            imageUrlInput.value = publicUrl;
+            imagePreview.src = publicUrl;
+            imagePreview.classList.remove('hidden');
+            imagePlaceholderIcon.classList.add('hidden');
+            uploadProgressText.classList.add('hidden');
+            imageFileInput.disabled = false;
+
+            showNotification('تم رفع الصورة بنجاح');
+        });
+
+        // ── Edit/Add Modal controls ───────────────────────────────────────────
+        const articleModal = document.getElementById('article-modal');
+        const articleForm = document.getElementById('article-form');
+        const addNewsBtn = document.getElementById('add-news-btn');
+        const articleDbIdInput = document.getElementById('article-db-id');
+
+        addNewsBtn.addEventListener('click', () => {
+            document.getElementById('modal-article-title').innerText = 'إضافة مقال أو نشاط ميداني';
+            articleForm.reset();
+            articleDbIdInput.value = '';
+            imagePreview.classList.add('hidden');
+            imagePlaceholderIcon.classList.remove('hidden');
+            articleModal.classList.remove('hidden');
+        });
+
+        document.querySelectorAll('.close-article-modal').forEach(btn => {
+            btn.addEventListener('click', () => articleModal.classList.add('hidden'));
+        });
+        document.getElementById('article-modal-backdrop').addEventListener('click', () => {
+            articleModal.classList.add('hidden');
+        });
+
+        async function editArticle(id) {
+            const { data, error } = await supabaseClient
+                .from('articles')
+                .select('*')
+                .eq('id', id)
+                .single();
+
+            if (error) {
+                showNotification('فشل تحميل تفاصيل المقال: ' + error.message, 'error');
+                return;
+            }
+
+            document.getElementById('modal-article-title').innerText = 'تعديل المقال';
+            articleDbIdInput.value = data.id;
+
+            document.getElementById('article-category').value = data.category;
+            document.getElementById('article-title').value = data.title;
+            document.getElementById('article-image-url').value = data.image_url;
+            document.getElementById('article-content').value = data.description;
+
+            const imgUrl = data.image_url.startsWith('http') ? data.image_url : `./${data.image_url}`;
+            imagePreview.src = imgUrl;
+            imagePreview.classList.remove('hidden');
+            imagePlaceholderIcon.classList.add('hidden');
+
+            articleModal.classList.remove('hidden');
+        }
+
+        async function deleteArticle(id) {
+            if (!confirm('هل أنت متأكد من رغبتك في حذف هذا الخبر نهائياً؟')) return;
+
+            const { error } = await supabaseClient.from('articles').delete().eq('id', id);
+
+            if (error) {
+                showNotification('فشل الحذف: ' + error.message, 'error');
+            } else {
+                showNotification('تم حذف المقال بنجاح');
+                loadNewsList();
+            }
+        }
+
+        articleForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const dbId = document.getElementById('article-db-id').value;
+            const category = document.getElementById('article-category').value;
+            const title = document.getElementById('article-title').value;
+            const image_url = document.getElementById('article-image-url').value;
+            const description = document.getElementById('article-content').value;
+
+            const saveBtn = document.getElementById('save-article-btn');
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i> جاري النشر...';
+
+            const payload = { category, title, image_url, description };
+            if (dbId) {
+                payload.id = parseInt(dbId);
+            }
+
+            const { error } = await supabaseClient.from('articles').upsert(payload, { onConflict: 'id' });
+
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i><span>نشر المقال</span>';
+
+            if (error) {
+                showNotification('فشل حفظ المقال: ' + error.message, 'error');
+            } else {
+                showNotification('تم حفظ المقال ونشره بنجاح');
+                articleModal.classList.add('hidden');
+                loadNewsList();
+            }
+        });
+
+        // ── Votes/Supporters CRUD ──────────────────────────────────────────────
+        let votesCache = [];
+
+        async function loadVotesList() {
+            const tableBody = document.getElementById('voters-table-body');
+            const emptyState = document.getElementById('voters-empty-state');
+            
+            if (!tableBody) return;
+            
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="4" class="text-center py-12">
+                        <i class="fas fa-circle-notch fa-spin text-4xl text-jj-gold mb-3"></i>
+                        <p class="text-gray-400">جاري تحميل قائمة الداعمين...</p>
+                    </td>
+                </tr>`;
+            emptyState.classList.add('hidden');
+
+            const { data, error } = await supabaseClient
+                .from('votes')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="text-center py-12 text-red-400">
+                            <i class="fas fa-exclamation-triangle text-3xl mb-2"></i>
+                            <p>حدث خطأ أثناء جلب قائمة الداعمين: ${error.message}</p>
+                        </td>
+                    </tr>`;
+                return;
+            }
+
+            votesCache = data || [];
+            calculateVotesKPIs(votesCache);
+            renderVotesTable(votesCache);
+        }
+
+        function calculateVotesKPIs(votes) {
+            document.getElementById('kpi-total-voters').innerText = votes.length.toLocaleString();
+
+            const todayStr = new Date().toDateString();
+            const todayCount = votes.filter(v => {
+                if (!v.created_at) return false;
+                return new Date(v.created_at).toDateString() === todayStr;
+            }).length;
+
+            document.getElementById('kpi-today-voters').innerText = todayCount.toLocaleString();
+        }
+
+        function renderVotesTable(votes) {
+            const tableBody = document.getElementById('voters-table-body');
+            const emptyState = document.getElementById('voters-empty-state');
+            
+            if (!tableBody) return;
+            tableBody.innerHTML = '';
+            
+            if (votes.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            
+            emptyState.classList.add('hidden');
+            
+            votes.forEach(v => {
+                const dateStr = v.created_at 
+                    ? new Date(v.created_at).toLocaleDateString('ar-DZ', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) 
+                    : '<span class="text-gray-500 italic">N/A</span>';
+                const emailVal = v.email ? v.email : '<span class="text-gray-500 italic">N/A</span>';
+                const phoneVal = v.phone ? v.phone : '<span class="text-gray-500 italic">N/A</span>';
+                
+                tableBody.innerHTML += `
+                    <tr class="hover:bg-white/5 transition-colors">
+                        <td class="px-6 py-4 font-bold text-white">${v.name}</td>
+                        <td class="px-6 py-4 font-mono text-jj-gold text-left" dir="ltr">${phoneVal}</td>
+                        <td class="px-6 py-4 text-left font-mono text-gray-300" dir="ltr">${emailVal}</td>
+                        <td class="px-6 py-4 text-gray-400 text-xs">${dateStr}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Real-time search handler for votes
+        const searchInput = document.getElementById('voters-search-input');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase().trim();
+                if (!query) {
+                    renderVotesTable(votesCache);
+                    return;
+                }
+                
+                const filtered = votesCache.filter(v => {
+                    const nameMatch = v.name && v.name.toLowerCase().includes(query);
+                    const phoneMatch = v.phone && v.phone.toLowerCase().includes(query);
+                    return nameMatch || phoneMatch;
+                });
+                
+                renderVotesTable(filtered);
+            });
+        }
+
+        // Initialize Page
+        checkAuthState();
+    </script>
+</body>
+
+</html>

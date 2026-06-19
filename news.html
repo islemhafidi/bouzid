@@ -37,6 +37,9 @@
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <!-- Custom Tailwind Configuration -->
     <script>
         tailwind.config = {
@@ -333,16 +336,61 @@
             }
         };
 
-        window.addEventListener('DOMContentLoaded', () => {
+        const SUPABASE_URL = 'https://sbvnrgjseqxuvjlcfnrp.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNidm5yZ2pzZXF4dXZqbGNmbnJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyODcyNTgsImV4cCI6MjA5Njg2MzI1OH0.ylPtYMwcnp2tYViiGKHH_r0biw4ui6E2fyEqiNztQAU';
+        let sb = null;
+        try {
+            sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        } catch (e) {
+            console.error('Failed to initialize Supabase client:', e);
+        }
+
+        window.addEventListener('DOMContentLoaded', async () => {
             const params = new URLSearchParams(window.location.search);
             const newsId = params.get('id');
-            const data = newsData[newsId];
+            
+            let data = null;
+
+            // 1. Try fetching from Supabase
+            const isNumericId = newsId && /^\d+$/.test(newsId);
+            if (sb && isNumericId) {
+                try {
+                    const { data: dbData, error } = await sb
+                        .from('articles')
+                        .select('*')
+                        .eq('id', newsId)
+                        .single();
+                    if (!error && dbData) {
+                        const dateStr = dbData.created_at 
+                            ? new Date(dbData.created_at).toLocaleDateString('ar-DZ', { day: 'numeric', month: 'long', year: 'numeric' }) 
+                            : '19 جوان 2026';
+                        data = {
+                            title: dbData.title,
+                            category: dbData.category,
+                            image: dbData.image_url,
+                            date: dateStr,
+                            content: dbData.description
+                        };
+                        console.log('Loaded news from Supabase articles:', data);
+                    }
+                } catch (e) {
+                    console.error('Supabase fetch news failed:', e);
+                }
+            }
+
+            // 2. Fallback to Local newsData
+            if (!data) {
+                const fallbackMap = { '1': 'babar', '2': 'boujalbana', '3': 'university' };
+                const resolvedKey = fallbackMap[newsId] || newsId;
+                data = newsData[resolvedKey];
+                console.log('Using local newsData fallback');
+            }
 
             if (data) {
                 const pageTitle = `${data.title} | الأستاذ حناشي بوزيد`;
                 const pageDescription = data.content.substring(0, 150) + '...';
                 const pageUrl = `https://hannachibouzid.com/news.html?id=${newsId}`;
-                const imageUrl = `https://hannachibouzid.com/${data.image}`;
+                const imageUrl = data.image.startsWith('http') ? data.image : `https://hannachibouzid.com/${data.image}`;
 
                 // Update standard SEO
                 document.getElementById('page-title').innerText = pageTitle;
@@ -374,7 +422,11 @@
                 document.getElementById('news-content').innerHTML = `
                     <div class="mb-8">
                         <div class="w-full h-64 md:h-[500px] overflow-hidden rounded-3xl mb-8 shadow-lg">
-                            <img src="${data.image}" alt="${data.title} - الأستاذ حناشي بوزيد - ولاية خنشلة" class="w-full h-full object-cover">
+                            <img src="${data.image}" 
+                                 onload="this.classList.remove('opacity-0'); this.classList.add('opacity-100');" 
+                                 onerror="this.onerror=null; this.src='./img1.jpg'; this.classList.remove('opacity-0'); this.classList.add('opacity-100');" 
+                                 alt="${data.title} - الأستاذ حناشي بوزيد - ولاية خنشلة" 
+                                 class="opacity-0 transition-opacity duration-500 w-full h-full object-cover">
                         </div>
                         <div class="flex items-center gap-3 mb-4">
                             <span class="bg-jj-dark-blue/10 text-jj-dark-blue px-4 py-1.5 rounded-full text-sm font-bold uppercase tracking-wider">${data.category}</span>

@@ -21,7 +21,7 @@ const MIME_TYPES = {
 };
 
 // In-memory cache for Database to optimize read performance and prevent I/O bottlenecks
-let dbCache = { votes: [], count: 1152 };
+let dbCache = { votes: [], count: 631 };
 let writeQueue = Promise.resolve();
 
 // Asynchronous DB initialization
@@ -32,11 +32,11 @@ async function initDb() {
         const parsed = JSON.parse(data);
         dbCache = parsed;
         if (typeof dbCache.count !== 'number') {
-            dbCache.count = dbCache.votes ? dbCache.votes.length : 1152;
+            dbCache.count = dbCache.votes ? dbCache.votes.length : 631;
         }
     } catch (err) {
         // File does not exist or is invalid JSON, initialize it
-        dbCache = { votes: [], count: 1152 };
+        dbCache = { votes: [], count: 631 };
         await saveDbAsync();
     }
 }
@@ -71,9 +71,9 @@ const server = http.createServer(async (req, res) => {
         req.on('end', async () => {
             try {
                 const { name, email, phone } = JSON.parse(body);
-                if (!name || !email) {
+                if (!name) {
                     res.writeHead(400, { 'Content-Type': 'application/json' });
-                    return res.end(JSON.stringify({ error: 'Name and email are required' }));
+                    return res.end(JSON.stringify({ error: 'Name is required' }));
                 }
 
                 // Add to cache (Instant and non-blocking)
