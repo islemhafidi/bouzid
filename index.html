@@ -748,6 +748,374 @@
             font-size: 0.72rem;
             font-weight: 700;
         }
+
+        .hero-portrait-glow {
+            position: absolute;
+            width: 85%;
+            height: 85%;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(217, 177, 55, 0.22) 0%, transparent 70%);
+            filter: blur(60px);
+            z-index: 0;
+            pointer-events: none;
+            transition: all 0.5s ease;
+        }
+
+        .portrait-frame-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 2.2rem;
+            border: 2px solid rgba(217, 177, 55, 0.25);
+            background: linear-gradient(135deg, rgba(22, 43, 94, 0.4) 0%, rgba(10, 20, 47, 0.85) 100%);
+            box-shadow: 0 30px 60px rgba(10, 20, 47, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            width: 100%;
+            max-width: 440px;
+            aspect-ratio: 4 / 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .portrait-frame-card:hover {
+            transform: translateY(-8px) scale(1.025);
+            border-color: rgba(217, 177, 55, 0.5);
+            box-shadow: 0 40px 80px rgba(217, 177, 55, 0.2), 0 0 0 1px rgba(217, 177, 55, 0.2);
+        }
+
+        .portrait-frame-card img {
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform-origin: bottom center;
+        }
+
+        .portrait-frame-card:hover img {
+            transform: scale(1.18);
+        }
+
+        .portrait-frame-badge {
+            transition: all 0.5s ease;
+        }
+
+        /* ============================================================
+           LIGHT MODE OVERRIDES
+           ============================================================ */
+        body.light-mode {
+            background-color: #FFFFFF;
+            color: #0F1E46;
+        }
+
+        body.light-mode::before {
+            background: radial-gradient(ellipse 140% 100% at 50% 0%,
+                    transparent 40%,
+                    rgba(232, 237, 245, 0.4) 100%) !important;
+        }
+
+        body.light-mode #parallax-map svg {
+            opacity: 0.06 !important;
+        }
+
+        body.light-mode #scan-line {
+            opacity: 0.25 !important;
+        }
+
+        body.light-mode #scan-line-h {
+            opacity: 0.08 !important;
+        }
+
+        body.light-mode .bg-orb-blue {
+            background: radial-gradient(circle, rgba(26, 58, 120, 0.06) 0%, transparent 68%) !important;
+        }
+
+        body.light-mode .bg-orb-gold {
+            background: radial-gradient(circle, rgba(217, 177, 55, 0.03) 0%, transparent 65%) !important;
+        }
+
+        /* Glass Nav */
+        body.light-mode .glass-nav {
+            background: rgba(255, 255, 255, 0.85) !important;
+            border-color: rgba(15, 30, 70, 0.08) !important;
+            box-shadow: 0 10px 30px rgba(15, 30, 70, 0.05);
+        }
+
+        body.light-mode .glass-nav h1,
+        body.light-mode .glass-nav a,
+        body.light-mode .glass-nav p {
+            color: #0F1E46 !important;
+        }
+
+        body.light-mode .glass-nav a:hover {
+            color: #D9B137 !important;
+        }
+
+        body.light-mode .glass-nav .nav-underline {
+            background: linear-gradient(to left, #0F1E46, #D9B137) !important;
+        }
+
+        body.light-mode .glass-nav .bg-white\/10 {
+            background-color: rgba(15, 30, 70, 0.08) !important;
+            color: #0F1E46 !important;
+        }
+
+        body.light-mode #theme-toggle {
+            background-color: rgba(15, 30, 70, 0.08) !important;
+            color: #0F1E46 !important;
+        }
+
+        body.light-mode #theme-toggle:hover {
+            background-color: rgba(15, 30, 70, 0.15) !important;
+        }
+
+        body.light-mode #mobile-menu-btn span {
+            background-color: #0F1E46 !important;
+        }
+
+        /* Mobile Menu Panel */
+        body.light-mode #menu-panel {
+            background: #FFFFFF !important;
+            border-left: 1px solid rgba(15, 30, 70, 0.08) !important;
+        }
+
+        body.light-mode #close-mobile-menu,
+        body.light-mode #close-cv-modal {
+            background-color: #D9B137 !important;
+            color: #0F1E46 !important;
+            box-shadow: 0 4px 12px rgba(217, 177, 55, 0.2) !important;
+        }
+
+        body.light-mode #close-mobile-menu:hover,
+        body.light-mode #close-cv-modal:hover {
+            background-color: #F0CB5A !important;
+            color: #0F1E46 !important;
+            box-shadow: 0 6px 18px rgba(217, 177, 55, 0.35) !important;
+        }
+
+        body.light-mode .mobile-nav-link {
+            color: #0F1E46 !important;
+        }
+
+        body.light-mode .mobile-nav-link:hover {
+            color: #D9B137 !important;
+        }
+
+        /* Text Headings & Paragraphs */
+        body.light-mode #hero h2,
+        body.light-mode #about h2,
+        body.light-mode #program h2,
+        body.light-mode #program h3 {
+            color: #0F1E46 !important;
+        }
+
+        body.light-mode #hero p:not(#hero-vote-counter),
+        body.light-mode #about p,
+        body.light-mode #program p {
+            color: #4b5563 !important;
+        }
+
+        body.light-mode #hero p.text-white\/50,
+        body.light-mode #about p.text-white\/50,
+        body.light-mode #about p.text-white\/65,
+        body.light-mode #program p.text-white\/55 {
+            color: #4b5563 !important;
+        }
+
+        /* Navy Cards & Profile Card */
+        body.light-mode .card-navy,
+        body.light-mode .profile-card {
+            background: rgba(255, 255, 255, 0.95) !important;
+            border-color: rgba(15, 30, 70, 0.08) !important;
+            box-shadow: 0 10px 30px rgba(15, 30, 70, 0.04) !important;
+            color: #0F1E46 !important;
+        }
+
+        body.light-mode .card-navy h3,
+        body.light-mode .profile-card h3 {
+            color: #0F1E46 !important;
+        }
+
+        body.light-mode .card-navy p,
+        body.light-mode .card-navy span:not(.badge-number, .btn-gold *, .badge-number *),
+        body.light-mode .profile-card p,
+        body.light-mode .profile-card span:not(.badge-number, .btn-gold *, .badge-number *) {
+            color: #4b5563 !important;
+        }
+
+        body.light-mode .card-navy .badge-label,
+        body.light-mode .profile-card .badge-label {
+            color: rgba(15, 30, 70, 0.6) !important;
+        }
+
+        body.light-mode .card-navy .profile-value,
+        body.light-mode .profile-card .profile-value {
+            color: #0F1E46 !important;
+        }
+
+        body.light-mode .card-navy .profile-divider,
+        body.light-mode .profile-card .profile-divider {
+            border-top-color: rgba(15, 30, 70, 0.08) !important;
+        }
+
+        body.light-mode .card-navy .profile-icon,
+        body.light-mode .profile-card .profile-icon {
+            background-color: rgba(15, 30, 70, 0.05) !important;
+            color: #0F1E46 !important;
+        }
+
+        /* Keep the primary gold calendar check icon gold */
+        body.light-mode .card-navy .profile-icon.bg-jj-gold\/15,
+        body.light-mode .profile-card .profile-icon.bg-jj-gold\/15 {
+            background-color: rgba(217, 177, 55, 0.15) !important;
+            color: #D9B137 !important;
+        }
+
+        body.light-mode .card-navy .profile-badge,
+        body.light-mode .profile-card .profile-badge {
+            background-color: rgba(15, 30, 70, 0.03) !important;
+            border-color: rgba(15, 30, 70, 0.06) !important;
+        }
+
+        body.light-mode .card-navy .profile-qr,
+        body.light-mode .profile-card .profile-qr {
+            background-color: rgba(15, 30, 70, 0.02) !important;
+            border-color: rgba(15, 30, 70, 0.05) !important;
+        }
+
+        body.light-mode .card-navy .bg-white\/15,
+        body.light-mode .profile-card .bg-white\/15 {
+            background-color: rgba(15, 30, 70, 0.08) !important;
+            color: #0F1E46 !important;
+        }
+
+        body.light-mode .card-navy .text-white,
+        body.light-mode .profile-card .text-white {
+            color: #0F1E46 !important;
+        }
+
+        body.light-mode .card-navy .text-white\/50,
+        body.light-mode .profile-card .text-white\/50 {
+            color: rgba(15, 30, 70, 0.6) !important;
+        }
+
+        body.light-mode .card-navy .text-white\/40,
+        body.light-mode .profile-card .text-white\/40 {
+            color: rgba(15, 30, 70, 0.5) !important;
+        }
+
+        body.light-mode .profile-card .cta-chip {
+            background-color: rgba(15, 30, 70, 0.05) !important;
+            border-color: rgba(15, 30, 70, 0.1) !important;
+            color: #0F1E46 !important;
+        }
+
+        body.light-mode .hero-portrait-glow {
+            background: radial-gradient(circle, rgba(217, 177, 55, 0.12) 0%, transparent 70%) !important;
+            filter: blur(60px);
+        }
+
+        body.light-mode .portrait-frame-card {
+            background: linear-gradient(135deg, rgba(232, 237, 245, 0.6) 0%, rgba(255, 255, 255, 0.95) 100%) !important;
+            border-color: rgba(15, 30, 70, 0.1) !important;
+            box-shadow: 0 30px 60px rgba(15, 30, 70, 0.06), 0 0 0 1px rgba(15, 30, 70, 0.02) !important;
+        }
+
+        body.light-mode .portrait-frame-card:hover {
+            border-color: rgba(217, 177, 55, 0.4) !important;
+            box-shadow: 0 40px 80px rgba(217, 177, 55, 0.15), 0 0 0 1px rgba(217, 177, 55, 0.1) !important;
+        }
+
+        body.light-mode .portrait-frame-badge {
+            background-color: rgba(255, 255, 255, 0.96) !important;
+            border-color: rgba(15, 30, 70, 0.08) !important;
+            box-shadow: 0 10px 30px rgba(15, 30, 70, 0.06) !important;
+        }
+
+        body.light-mode .portrait-frame-badge h3 {
+            color: #0F1E46 !important;
+        }
+
+        body.light-mode #hero-vote-counter {
+            color: #D9B137 !important;
+        }
+
+        body.light-mode .progress-track {
+            background: rgba(15, 30, 70, 0.08) !important;
+        }
+
+        body.light-mode #about .relative.overflow-hidden {
+            border-color: rgba(15, 30, 70, 0.08) !important;
+            background-color: rgba(15, 30, 70, 0.03) !important;
+        }
+
+        /* News Section in Light Mode */
+        body.light-mode #news {
+            background: rgba(255, 255, 255, 0.95) !important;
+        }
+
+        body.light-mode #news h2,
+        body.light-mode #news h3,
+        body.light-mode #news p,
+        body.light-mode #news span {
+            color: #0F1E46 !important;
+        }
+
+        body.light-mode #news .text-dz-slate\/60,
+        body.light-mode #news p.text-sm {
+            color: #4b5563 !important;
+        }
+
+        body.light-mode #news #show-all-news-btn {
+            color: #0F1E46 !important;
+        }
+
+        body.light-mode #news .group:hover h3 {
+            color: #D9B137 !important;
+        }
+
+        /* CV Modal in Light Mode */
+        body.light-mode #cv-modal .modal-content {
+            background-color: #FFFFFF !important;
+            border-color: rgba(15, 30, 70, 0.08) !important;
+        }
+
+        body.light-mode #cv-modal .bg-gradient-to-l {
+            background: linear-gradient(to left, #F4F6FB, #FFFFFF) !important;
+            border-bottom-color: rgba(15, 30, 70, 0.08) !important;
+        }
+
+        body.light-mode #cv-modal #cv-modal-title {
+            color: #D9B137 !important;
+        }
+
+        body.light-mode #cv-modal h2 {
+            color: #0F1E46 !important;
+        }
+
+        body.light-mode #cv-modal p,
+        body.light-mode #cv-modal li {
+            color: #4b5563 !important;
+        }
+
+        body.light-mode #cv-modal strong {
+            color: #0F1E46 !important;
+        }
+
+        body.light-mode #cv-modal hr {
+            border-color: rgba(15, 30, 70, 0.08) !important;
+        }
+
+        body.light-mode #cv-modal .bg-jj-gold\/10 {
+            background-color: rgba(217, 177, 55, 0.1) !important;
+            border-color: rgba(217, 177, 55, 0.3) !important;
+        }
+
+        body.light-mode #cv-modal .bg-jj-gold\/10 p {
+            color: #0F1E46 !important;
+        }
+
+        body.light-mode #cv-modal .bg-jj-gold\/15 {
+            background-color: rgba(217, 177, 55, 0.15) !important;
+            color: #D9B137 !important;
+        }
     </style>
 </head>
 
@@ -987,6 +1355,12 @@
 
                 <!-- Right: CTA Buttons -->
                 <div class="flex items-center gap-2 md:gap-3">
+                    <!-- Theme Toggle Button -->
+                    <button id="theme-toggle"
+                        class="w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all duration-300"
+                        title="تغيير المظهر">
+                        <i class="fas fa-sun text-lg" id="theme-toggle-icon"></i>
+                    </button>
                     <!-- CTA Button -->
                     <button id="open-vote-modal-2"
                         class="hidden sm:flex items-center gap-2 btn-gold px-5 md:px-7 py-2.5 md:py-3 rounded-xl text-sm md:text-base shadow-lg">
@@ -1157,152 +1531,33 @@
                     </button>
                 </div>
 
-                <!-- Candidate Profile Card (replaces full-size photo) -->
-                <div class="relative order-1 md:order-2 scroll-animate">
-                    <div class="profile-card">
-
-                        <!-- Header: Name + Party -->
-                        <div class="flex items-center gap-4 mb-4">
-                            <div
-                                class="w-14 h-14 rounded-xl bg-gradient-to-br from-jj-gold to-jj-gold-light flex items-center justify-center text-jj-dark-blue shadow-lg shadow-jj-gold/30 flex-shrink-0">
-                                <i class="fas fa-user-tie text-xl"></i>
-                            </div>
-                            <div>
-                                <p class="text-white/50 text-xs font-semibold uppercase tracking-widest mb-0.5">المترشح
-                                </p>
-                                <h3 class="text-white font-black text-xl md:text-2xl leading-tight">حناشي بوزيد</h3>
-                                <p class="text-jj-gold text-xs font-bold mt-0.5">حزب جيل جديد &mdash; ولاية خنشلة</p>
-                            </div>
+                <!-- Candidate Profile Photo Frame -->
+                <div class="relative order-1 md:order-2 flex justify-center items-center scroll-animate">
+                    <!-- Ambient Glow Behind Portrait Frame -->
+                    <div class="hero-portrait-glow" aria-hidden="true"></div>
+                    
+                    <!-- Candidate Photo Frame Card -->
+                    <div class="portrait-frame-card">
+                        <!-- Top Accent Badge -->
+                        <div class="absolute top-4 right-4 bg-jj-gold text-jj-dark-blue font-black px-3.5 py-1.5 rounded-xl text-[10px] md:text-xs z-20 shadow-md">
+                            القائمة 14 &bull; المترشح 2
                         </div>
 
-                        <hr class="profile-divider">
-
-                        <!-- Election Numbers Grid -->
-                        <div class="profile-badge-grid">
-                            <div class="profile-badge">
-                                <div class="badge-number">14</div>
-                                <div class="badge-label">رقم القائمة</div>
-                            </div>
-                            <div class="profile-badge">
-                                <div class="badge-number">2</div>
-                                <div class="badge-label">رقم المترشح</div>
-                            </div>
+                        <!-- Algerian Flag Ribbon Accent on Top-Left -->
+                        <div class="absolute top-4 left-4 flex gap-1 z-20">
+                            <span class="w-2.5 h-4 bg-green-600 rounded-sm"></span>
+                            <span class="w-2.5 h-4 bg-white rounded-sm flex items-center justify-center text-[6px] text-red-600 font-bold">*</span>
+                            <span class="w-2.5 h-4 bg-red-600 rounded-sm"></span>
                         </div>
+                        
+                        <!-- Candidate Photo -->
+                        <img src="candidat-hanachi.png" alt="الأستاذ حناشي بوزيد" class="w-full h-full object-contain object-bottom z-10 scale-[1.12]">
 
-                        <hr class="profile-divider">
-
-                        <!-- Election Date -->
-                        <div class="profile-row">
-                            <div class="profile-icon bg-jj-gold/15 text-jj-gold">
-                                <i class="fas fa-calendar-check"></i>
-                            </div>
-                            <div>
-                                <p class="profile-label">تاريخ الانتخاب</p>
-                                <p class="profile-value">2 جويلية 2026</p>
-                            </div>
+                        <!-- Bottom Floating Info Badge -->
+                        <div class="portrait-frame-badge absolute bottom-4 left-4 right-4 p-3.5 rounded-2xl bg-jj-dark-blue/90 border border-jj-gold/30 text-center z-20 shadow-xl backdrop-blur-md">
+                            <h3 class="text-white font-black text-base md:text-lg leading-tight">الأستاذ حناشي بوزيد</h3>
+                            <p class="text-jj-gold text-[10px] md:text-xs font-bold mt-1">مرشح حزب جيل جديد &mdash; ولاية خنشلة</p>
                         </div>
-
-                        <!-- Role -->
-                        <div class="profile-row">
-                            <div class="profile-icon bg-white/10 text-white/70">
-                                <i class="fas fa-graduation-cap"></i>
-                            </div>
-                            <div>
-                                <p class="profile-label">المنصب</p>
-                                <p class="profile-value text-sm">رئيس قسم العلوم والتكنولوجيا &bull; جامعة خنشلة</p>
-                            </div>
-                        </div>
-
-                        <!-- Election Type -->
-                        <div class="profile-row">
-                            <div class="profile-icon bg-white/10 text-white/70">
-                                <i class="fas fa-landmark"></i>
-                            </div>
-                            <div>
-                                <p class="profile-label">نوع الانتخاب</p>
-                                <p class="profile-value text-sm">المجلس الشعبي الوطني &mdash; دورة 2026</p>
-                            </div>
-                        </div>
-
-                        <hr class="profile-divider">
-
-                        <!-- QR Code + Website -->
-                        <div class="profile-qr mb-4">
-                            <!-- Inline QR Code (SVG representation) -->
-                            <div class="profile-qr-code">
-                                <svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"
-                                    style="display:block">
-                                    <!-- QR finder patterns -->
-                                    <rect width="64" height="64" fill="white" />
-                                    <!-- Top-left finder -->
-                                    <rect x="4" y="4" width="20" height="20" rx="2" fill="#0F1E46" />
-                                    <rect x="8" y="8" width="12" height="12" rx="1" fill="white" />
-                                    <rect x="11" y="11" width="6" height="6" fill="#0F1E46" />
-                                    <!-- Top-right finder -->
-                                    <rect x="40" y="4" width="20" height="20" rx="2" fill="#0F1E46" />
-                                    <rect x="44" y="8" width="12" height="12" rx="1" fill="white" />
-                                    <rect x="47" y="11" width="6" height="6" fill="#0F1E46" />
-                                    <!-- Bottom-left finder -->
-                                    <rect x="4" y="40" width="20" height="20" rx="2" fill="#0F1E46" />
-                                    <rect x="8" y="44" width="12" height="12" rx="1" fill="white" />
-                                    <rect x="11" y="47" width="6" height="6" fill="#0F1E46" />
-                                    <!-- Data modules (simplified pattern) -->
-                                    <rect x="28" y="4" width="4" height="4" fill="#0F1E46" />
-                                    <rect x="34" y="4" width="4" height="4" fill="#0F1E46" />
-                                    <rect x="28" y="10" width="4" height="4" fill="#0F1E46" />
-                                    <rect x="34" y="10" width="4" height="4" fill="#0F1E46" />
-                                    <rect x="28" y="16" width="4" height="4" fill="#0F1E46" />
-                                    <rect x="4" y="28" width="4" height="4" fill="#0F1E46" />
-                                    <rect x="10" y="28" width="4" height="4" fill="#0F1E46" />
-                                    <rect x="16" y="28" width="4" height="4" fill="#0F1E46" />
-                                    <rect x="4" y="34" width="4" height="4" fill="#0F1E46" />
-                                    <rect x="16" y="34" width="4" height="4" fill="#0F1E46" />
-                                    <rect x="28" y="28" width="4" height="4" fill="#0F1E46" />
-                                    <rect x="34" y="28" width="4" height="4" fill="#0F1E46" />
-                                    <rect x="40" y="28" width="4" height="4" fill="#0F1E46" />
-                                    <rect x="46" y="28" width="4" height="4" fill="#0F1E46" />
-                                    <rect x="52" y="28" width="4" height="4" fill="#0F1E46" />
-                                    <rect x="58" y="28" width="4" height="4" fill="#0F1E46" />
-                                    <rect x="28" y="34" width="4" height="4" fill="#0F1E46" />
-                                    <rect x="40" y="34" width="4" height="4" fill="#0F1E46" />
-                                    <rect x="52" y="34" width="4" height="4" fill="#0F1E46" />
-                                    <rect x="28" y="40" width="4" height="4" fill="#0F1E46" />
-                                    <rect x="34" y="46" width="4" height="4" fill="#0F1E46" />
-                                    <rect x="46" y="40" width="4" height="4" fill="#0F1E46" />
-                                    <rect x="52" y="46" width="4" height="4" fill="#0F1E46" />
-                                    <rect x="34" y="52" width="4" height="4" fill="#0F1E46" />
-                                    <rect x="40" y="52" width="4" height="4" fill="#0F1E46" />
-                                    <rect x="52" y="52" width="4" height="4" fill="#0F1E46" />
-                                    <rect x="58" y="52" width="4" height="4" fill="#0F1E46" />
-                                    <rect x="58" y="40" width="4" height="4" fill="#0F1E46" />
-                                    <rect x="28" y="58" width="4" height="4" fill="#0F1E46" />
-                                    <rect x="46" y="58" width="4" height="4" fill="#0F1E46" />
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="profile-label mb-1">التصويت الإلكتروني</p>
-                                <a href="https://hannachibouzid.com" target="_blank" rel="noopener"
-                                    class="text-jj-gold font-bold text-sm hover:underline">hannachibouzid.com</a>
-                                <p class="text-white/40 text-xs mt-1">امسح الرمز للدعم الإلكتروني</p>
-                            </div>
-                        </div>
-
-                        <!-- Calls to Action chips -->
-                        <div class="cta-row">
-                            <span class="cta-chip">
-                                <i class="fas fa-hand-holding-heart text-xs"></i>
-                                ادعم جيلنا الجديد
-                            </span>
-                            <span class="cta-chip">
-                                <i class="fas fa-laptop text-xs"></i>
-                                تصويتك الإلكتروني
-                            </span>
-                            <span class="cta-chip">
-                                <i class="fas fa-vote-yea text-xs"></i>
-                                إنتخب رقم 14
-                            </span>
-                        </div>
-
                     </div>
                 </div>
             </div>
@@ -2341,29 +2596,49 @@
                 frame++;
                 ctx.clearRect(0, 0, W, H);
 
-                // ── Deep navy base fill
-                ctx.fillStyle = '#0F1E46';
-                ctx.fillRect(0, 0, W, H);
+                // Check theme
+                const isLight = document.body.classList.contains('light-mode');
 
-                // ── Dual radial nebula highlights (GPU-friendly)
-                // Blue bloom — top centre
-                const g1 = ctx.createRadialGradient(W * 0.5, 0, 0, W * 0.5, H * 0.38, H * 0.82);
-                g1.addColorStop(0, 'rgba(26,58,120,0.42)');
-                g1.addColorStop(1, 'rgba(10,20,47,0)');
-                ctx.fillStyle = g1;
-                ctx.fillRect(0, 0, W, H);
+                if (isLight) {
+                    // White mode background
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.fillRect(0, 0, W, H);
+                    
+                    // Soft light-blue/gray radial gradient for premium look
+                    const gLight = ctx.createRadialGradient(W * 0.5, H * 0.2, 0, W * 0.5, H * 0.2, H * 0.8);
+                    gLight.addColorStop(0, 'rgba(232, 237, 245, 0.5)');
+                    gLight.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                    ctx.fillStyle = gLight;
+                    ctx.fillRect(0, 0, W, H);
+                } else {
+                    // ── Deep navy base fill
+                    ctx.fillStyle = '#0F1E46';
+                    ctx.fillRect(0, 0, W, H);
 
-                // Teal hint — bottom right
-                const g2 = ctx.createRadialGradient(W * 0.85, H, 0, W * 0.75, H * 0.75, H * 0.55);
-                g2.addColorStop(0, 'rgba(14,40,90,0.28)');
-                g2.addColorStop(1, 'rgba(10,20,47,0)');
-                ctx.fillStyle = g2;
-                ctx.fillRect(0, 0, W, H);
+                    // ── Dual radial nebula highlights (GPU-friendly)
+                    // Blue bloom — top centre
+                    const g1 = ctx.createRadialGradient(W * 0.5, 0, 0, W * 0.5, H * 0.38, H * 0.82);
+                    g1.addColorStop(0, 'rgba(26,58,120,0.42)');
+                    g1.addColorStop(1, 'rgba(10,20,47,0)');
+                    ctx.fillStyle = g1;
+                    ctx.fillRect(0, 0, W, H);
+
+                    // Teal hint — bottom right
+                    const g2 = ctx.createRadialGradient(W * 0.85, H, 0, W * 0.75, H * 0.75, H * 0.55);
+                    g2.addColorStop(0, 'rgba(14,40,90,0.28)');
+                    g2.addColorStop(1, 'rgba(10,20,47,0)');
+                    ctx.fillStyle = g2;
+                    ctx.fillRect(0, 0, W, H);
+                }
 
                 // ── Interactive cursor spotlight (gold glow follows mouse)
                 if (mouseX > 0) {
                     const gCursor = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, 130);
-                    gCursor.addColorStop(0, 'rgba(217,177,55,0.07)');
+                    if (isLight) {
+                        gCursor.addColorStop(0, 'rgba(217,177,55,0.12)');
+                    } else {
+                        gCursor.addColorStop(0, 'rgba(217,177,55,0.07)');
+                    }
                     gCursor.addColorStop(1, 'rgba(217,177,55,0)');
                     ctx.fillStyle = gCursor;
                     ctx.fillRect(0, 0, W, H);
@@ -2373,7 +2648,7 @@
                 LINES.forEach((l, i) => {
                     const pulse = 0.035 + 0.022 * Math.sin(frame * 0.011 + i * 0.9);
                     ctx.save();
-                    ctx.globalAlpha = pulse;
+                    ctx.globalAlpha = isLight ? pulse * 1.5 : pulse;
                     ctx.strokeStyle = '#D9B137';
                     ctx.lineWidth = 0.75;
                     ctx.beginPath();
@@ -2393,8 +2668,8 @@
                     if (d.y > H) d.y = 0;
 
                     ctx.save();
-                    ctx.globalAlpha = d.alpha;
-                    ctx.fillStyle = '#D9B137';
+                    ctx.globalAlpha = isLight ? d.alpha * 0.7 : d.alpha;
+                    ctx.fillStyle = isLight ? (d.alpha > 0.25 ? '#0F1E46' : '#D9B137') : '#D9B137';
                     ctx.beginPath();
                     ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
                     ctx.fill();
@@ -2451,6 +2726,35 @@
             document.querySelectorAll('#hero .scroll-animate').forEach((el, i) => {
                 setTimeout(() => el.classList.add('visible'), i * 120 + 200);
             });
+
+            // ── Theme Switcher state management ─────────────────────────────────────
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const themeToggleIcon = document.getElementById('theme-toggle-icon');
+
+            // Apply theme on load
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+                if (themeToggleIcon) {
+                    themeToggleIcon.classList.replace('fa-sun', 'fa-moon');
+                }
+            }
+
+            if (themeToggleBtn) {
+                themeToggleBtn.addEventListener('click', () => {
+                    document.body.classList.toggle('light-mode');
+                    const isLight = document.body.classList.contains('light-mode');
+                    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+
+                    if (themeToggleIcon) {
+                        if (isLight) {
+                            themeToggleIcon.classList.replace('fa-sun', 'fa-moon');
+                        } else {
+                            themeToggleIcon.classList.replace('fa-moon', 'fa-sun');
+                        }
+                    }
+                });
+            }
         });
     </script>
 </body>
