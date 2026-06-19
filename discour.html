@@ -365,8 +365,8 @@
         const themeToggleBtn = document.getElementById('theme-toggle');
         const themeToggleIcon = document.getElementById('theme-toggle-icon');
 
-        // Apply theme on load (default is dark for consistency across application)
-        const savedTheme = localStorage.getItem('theme') || 'dark';
+        // Apply theme on load (default is light)
+        const savedTheme = localStorage.getItem('theme') || 'light';
         if (savedTheme === 'dark') {
             document.body.classList.add('dark-mode');
             if (themeToggleIcon) {
