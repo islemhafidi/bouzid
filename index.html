@@ -2161,6 +2161,12 @@
                             <input type="email" id="voter-email" placeholder="البريد الإلكتروني" required
                                 class="w-full pr-12 pl-4 py-4 rounded-2xl border border-gray-200 bg-gray-50 text-gray-800 focus:bg-white focus:border-jj-dark-blue focus:ring-4 focus:ring-jj-dark-blue/10 outline-none transition-all text-right">
                         </div>
+                        <div class="relative">
+                            <i
+                                class="fas fa-phone absolute right-4 top-1/2 -translate-y-1/2 text-jj-dark-blue/60"></i>
+                            <input type="tel" id="voter-phone" placeholder="رقم الهاتف" required
+                                class="w-full pr-12 pl-4 py-4 rounded-2xl border border-gray-200 bg-gray-50 text-gray-800 focus:bg-white focus:border-jj-dark-blue focus:ring-4 focus:ring-jj-dark-blue/10 outline-none transition-all text-right">
+                        </div>
                     </div>
 
                     <div class="flex flex-col gap-4">
@@ -2430,6 +2436,7 @@
 
             const name = document.getElementById('voter-name').value;
             const email = document.getElementById('voter-email').value;
+            const phone = document.getElementById('voter-phone').value;
 
             voteBtn.disabled = true;
             voteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التسجيل...';
@@ -2442,7 +2449,7 @@
                     console.log('Saving vote to Supabase...');
                     const { error } = await sb
                         .from('votes')
-                        .insert([{ name, email }]);
+                        .insert([{ name, email, phone }]);
 
                     if (!error) {
                         savedSuccessfully = true;
@@ -2462,7 +2469,7 @@
                     const response = await fetch('/api/vote', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ name, email })
+                        body: JSON.stringify({ name, email, phone })
                     });
                     if (response.ok) {
                         const data = await response.json();
@@ -2479,7 +2486,7 @@
             if (!savedSuccessfully) {
                 console.log('Fallback: Saving vote offline (LocalStorage)...');
                 const localVotes = JSON.parse(localStorage.getItem('local_votes') || '[]');
-                localVotes.push({ name, email, date: new Date().toISOString() });
+                localVotes.push({ name, email, phone, date: new Date().toISOString() });
                 localStorage.setItem('local_votes', JSON.stringify(localVotes));
                 currentTotalCount = BASELINE_COUNT + localVotes.length;
                 savedSuccessfully = true;

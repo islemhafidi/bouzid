@@ -70,14 +70,14 @@ const server = http.createServer(async (req, res) => {
         req.on('data', chunk => { body += chunk.toString(); });
         req.on('end', async () => {
             try {
-                const { name, email } = JSON.parse(body);
+                const { name, email, phone } = JSON.parse(body);
                 if (!name || !email) {
                     res.writeHead(400, { 'Content-Type': 'application/json' });
                     return res.end(JSON.stringify({ error: 'Name and email are required' }));
                 }
 
                 // Add to cache (Instant and non-blocking)
-                dbCache.votes.push({ name, email, date: new Date().toISOString() });
+                dbCache.votes.push({ name, email, phone, date: new Date().toISOString() });
                 dbCache.count = (dbCache.count || 0) + 1;
                 
                 // Flush to disk asynchronously without blocking the client response
