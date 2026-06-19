@@ -1,0 +1,2458 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حزب جيل جديد | الأستاذ حناشي بوزيد - انتخابات 2 جويلية 2026</title>
+
+    <!-- Google Fonts: Cairo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'jj-dark-blue': '#0F1E46',
+                        'jj-blue': '#162B5E',
+                        'jj-navy': '#0A142F',
+                        'jj-gold': '#D9B137',
+                        'jj-gold-light': '#F0CB5A',
+                        'dz-white': '#FFFFFF',
+                        'dz-slate': '#E8EDF5',
+                    },
+                    fontFamily: {
+                        'cairo': ['Cairo', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* ============================================================
+           BASE — Deep Navy Brand Theme
+        ============================================================ */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #0F1E46;
+            color: #E8EDF5;
+            overflow-x: hidden;
+        }
+
+        /* ============================================================
+           FIXED BACKGROUND CANVAS  (z-index -10)
+        ============================================================ */
+        #bg-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -10;
+            pointer-events: none;
+        }
+
+        /* Subtle radial vignette so edges darken a bit */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: -9;
+            background: radial-gradient(ellipse 140% 100% at 50% 0%,
+                    transparent 40%,
+                    rgba(10, 20, 47, 0.55) 100%);
+            pointer-events: none;
+        }
+
+        /* ============================================================
+           SCROLLING PARALLAX WRAPPER
+        ============================================================ */
+        #parallax-map {
+            position: fixed;
+            inset: 0;
+            z-index: -8;
+            will-change: transform;
+            pointer-events: none;
+            transition: transform 0.05s linear;
+        }
+
+        /* ============================================================
+           GOLD SCAN-LINE ACCENT (CSS animation only, no JS)
+        ============================================================ */
+        #scan-line {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            z-index: -7;
+            background: linear-gradient(90deg,
+                    transparent 0%,
+                    rgba(217, 177, 55, 0.0) 20%,
+                    rgba(217, 177, 55, 0.5) 50%,
+                    rgba(217, 177, 55, 0.0) 80%,
+                    transparent 100%);
+            animation: scan-down 12s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            pointer-events: none;
+        }
+
+        @keyframes scan-down {
+            0% {
+                top: -2px;
+                opacity: 0;
+            }
+
+            5% {
+                opacity: 1;
+            }
+
+            95% {
+                opacity: 0.3;
+            }
+
+            100% {
+                top: 100%;
+                opacity: 0;
+            }
+        }
+
+        /* ============================================================
+           ANIMATED VOTE SUCCESS
+        ============================================================ */
+        @keyframes pulse-custom {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .animate-vote-success {
+            animation: pulse-custom 0.5s ease-in-out;
+        }
+
+        /* ============================================================
+           GLASSMORPHISM NAV
+        ============================================================ */
+        .glass-nav {
+            background: rgba(15, 30, 70, 0.75);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(217, 177, 55, 0.18);
+        }
+
+        /* ============================================================
+           MODALS
+        ============================================================ */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 10, 28, 0.82);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.35s ease-out;
+        }
+
+        /* Improve placeholder text contrast */
+        input::placeholder,
+        textarea::placeholder {
+            color: rgba(15, 30, 70, 0.7);
+            opacity: 1;
+        }
+
+        input::-webkit-input-placeholder,
+        textarea::-webkit-input-placeholder {
+            color: rgba(15, 30, 70, 0.7);
+        }
+
+        input::-moz-placeholder,
+        textarea::-moz-placeholder {
+            color: rgba(15, 30, 70, 0.7);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            transform: scale(0.85) translateY(24px);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-width: 520px;
+            width: 92%;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1) translateY(0);
+        }
+
+        /* ============================================================
+           SCROLL-TRIGGERED FADE-UP
+        ============================================================ */
+        .scroll-animate {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .scroll-animate.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ============================================================
+           CARD HOVER LIFT
+        ============================================================ */
+        .card-hover {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(10, 20, 47, 0.6);
+        }
+
+        /* Spring-like card motion */
+        .react-motion {
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .react-motion:hover {
+            transform: translateY(-5px);
+        }
+
+        /* ============================================================
+           GOLD BUTTON GRADIENT
+        ============================================================ */
+        .btn-gold {
+            background: linear-gradient(135deg, #D9B137 0%, #F0CB5A 100%);
+            color: #0F1E46;
+            font-weight: 800;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-gold:hover {
+            background: linear-gradient(135deg, #F0CB5A 0%, #D9B137 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(217, 177, 55, 0.45);
+        }
+
+        /* ============================================================
+           ANIMATED GOLD BORDER SWEEP
+        ============================================================ */
+        .animated-border {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .animated-border::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #D9B137, transparent);
+            animation: border-flow 4s linear infinite;
+        }
+
+        @keyframes border-flow {
+            0% {
+                left: -100%;
+            }
+
+            100% {
+                left: 100%;
+            }
+        }
+
+        /* ============================================================
+           NAV UNDERLINE ANIMATION
+        ============================================================ */
+        .nav-underline {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(to left, #D9B137, #F0CB5A);
+            transition: width 0.3s ease-out;
+        }
+
+        .nav-item a:hover .nav-underline {
+            width: 100%;
+        }
+
+        /* Scrolled state */
+        #main-header.scrolled nav {
+            box-shadow: 0 16px 40px -8px rgba(5, 10, 28, 0.5);
+        }
+
+        /* ============================================================
+           HAMBURGER ANIMATION
+        ============================================================ */
+        #mobile-menu-btn.active #bar1 {
+            transform: translateY(5px) rotate(45deg);
+        }
+
+        #mobile-menu-btn.active #bar2 {
+            opacity: 0;
+        }
+
+        #mobile-menu-btn.active #bar3 {
+            transform: translateY(-5px) rotate(-45deg);
+        }
+
+        #mobile-menu.active {
+            display: block;
+        }
+
+        #mobile-menu.active #menu-backdrop {
+            opacity: 1;
+        }
+
+        #mobile-menu.active #menu-panel {
+            transform: translateX(0);
+        }
+
+        #mobile-menu.active .mobile-nav-link {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ============================================================
+           SECTION OVERRIDES — white cards on navy bg
+        ============================================================ */
+        section.section-light {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(4px);
+        }
+
+        .card-white {
+            background: rgba(255, 255, 255, 0.97);
+            color: #0F1E46;
+        }
+
+        .card-navy {
+            background: rgba(15, 30, 70, 0.75);
+            border: 1px solid rgba(217, 177, 55, 0.2);
+            backdrop-filter: blur(8px);
+        }
+
+        /* Inputs on dark background */
+        .input-navy {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(217, 177, 55, 0.25);
+            color: #E8EDF5;
+        }
+
+        .input-navy::placeholder {
+            color: rgba(232, 237, 245, 0.4);
+        }
+
+        .input-navy:focus {
+            outline: none;
+            border-color: rgba(217, 177, 55, 0.6);
+            box-shadow: 0 0 0 3px rgba(217, 177, 55, 0.12);
+        }
+
+        /* White-background form (volunteer section) */
+        .input-white {
+            background: #f4f6fb;
+            border: 1px solid #d1d9e6;
+            color: #0F1E46;
+        }
+
+        .input-white::placeholder {
+            color: #8ca0be;
+        }
+
+        .input-white:focus {
+            outline: none;
+            border-color: #D9B137;
+            box-shadow: 0 0 0 3px rgba(217, 177, 55, 0.15);
+        }
+
+        /* Footer */
+        footer {
+            background: #0A142F;
+        }
+
+        /* Mobile menu panel — dark */
+        #menu-panel {
+            background: linear-gradient(160deg, #0F1E46 0%, #0A142F 100%);
+        }
+
+        .mobile-nav-link {
+            color: #E8EDF5;
+        }
+
+        .mobile-nav-link:hover {
+            color: #D9B137;
+        }
+
+        /* Progress bar track */
+        .progress-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Glow dot for map center */
+        @keyframes map-pulse {
+
+            0%,
+            100% {
+                r: 8;
+                opacity: 0.7;
+            }
+
+            50% {
+                r: 12;
+                opacity: 0.3;
+            }
+        }
+
+        .map-city-dot {
+            animation: map-pulse 3s ease-in-out infinite;
+        }
+
+        /* Gold shimmer on hover for map SVG */
+        #parallax-map:hover .map-route {
+            stroke: rgba(217, 177, 55, 0.35);
+            transition: stroke 0.5s ease;
+        }
+
+        /* ============================================================
+           MAP BREATHE — subtle scale pulse (GPU: transform only)
+        ============================================================ */
+        @keyframes map-breathe {
+
+            0%,
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+            50% {
+                transform: translate(-50%, -50%) scale(1.018);
+            }
+        }
+
+        #parallax-map svg {
+            animation: map-breathe 18s ease-in-out infinite;
+        }
+
+        /* ============================================================
+           AMBIENT CSS ORBS — fixed, GPU-composited, no JS
+        ============================================================ */
+        .bg-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: -6;
+        }
+
+        .bg-orb-blue {
+            top: -10%;
+            left: -8%;
+            width: clamp(400px, 55vw, 900px);
+            height: clamp(400px, 55vw, 900px);
+            background: radial-gradient(circle, rgba(26, 58, 120, 0.22) 0%, transparent 68%);
+            animation: orb-drift-a 22s ease-in-out infinite;
+        }
+
+        .bg-orb-gold {
+            bottom: -12%;
+            right: -5%;
+            width: clamp(300px, 40vw, 700px);
+            height: clamp(300px, 40vw, 700px);
+            background: radial-gradient(circle, rgba(217, 177, 55, 0.07) 0%, transparent 65%);
+            animation: orb-drift-b 28s ease-in-out infinite;
+        }
+
+        @keyframes orb-drift-a {
+
+            0%,
+            100% {
+                transform: translate(0, 0);
+            }
+
+            33% {
+                transform: translate(18px, 14px);
+            }
+
+            66% {
+                transform: translate(-12px, 20px);
+            }
+        }
+
+        @keyframes orb-drift-b {
+
+            0%,
+            100% {
+                transform: translate(0, 0);
+            }
+
+            40% {
+                transform: translate(-20px, -16px);
+            }
+
+            70% {
+                transform: translate(14px, -8px);
+            }
+        }
+
+        /* ============================================================
+           SECONDARY HORIZONTAL SCAN-LINE
+        ============================================================ */
+        #scan-line-h {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 1px;
+            z-index: -7;
+            background: linear-gradient(90deg,
+                    transparent 0%,
+                    rgba(217, 177, 55, 0.0) 10%,
+                    rgba(217, 177, 55, 0.18) 50%,
+                    rgba(217, 177, 55, 0.0) 90%,
+                    transparent 100%);
+            animation: scan-right 18s cubic-bezier(0.4, 0, 0.6, 1) 6s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes scan-right {
+            0% {
+                left: -100%;
+                top: 30%;
+                opacity: 0;
+            }
+
+            5% {
+                opacity: 1;
+            }
+
+            95% {
+                opacity: 0.2;
+            }
+
+            100% {
+                left: 100%;
+                top: 70%;
+                opacity: 0;
+            }
+        }
+
+        /* ============================================================
+           NEWS SECTION — override white bg for dark theme
+        ============================================================ */
+        #news {
+            background: rgba(255, 255, 255, 0.04) !important;
+            backdrop-filter: blur(4px);
+        }
+
+        #news h2,
+        #news h3,
+        #news p,
+        #news span,
+        #news a {
+            color: #E8EDF5;
+        }
+
+        #news a[href="#"] {
+            color: #D9B137 !important;
+        }
+
+        #news .group:hover h3 {
+            color: #D9B137 !important;
+        }
+
+        /* ============================================================
+           FOOTER OVERRIDE — ensure dark navy footer
+        ============================================================ */
+        footer.bg-dz-slate {
+            background: #0A142F !important;
+        }
+
+        footer h2,
+        footer h3,
+        footer p {
+            color: #E8EDF5;
+        }
+
+        footer .text-gray-400 {
+            color: rgba(232, 237, 245, 0.55) !important;
+        }
+
+        footer .text-gray-500 {
+            color: rgba(232, 237, 245, 0.4) !important;
+        }
+
+        footer a:hover {
+            color: #D9B137 !important;
+        }
+
+
+
+        /* ============================================================
+           CANDIDATE PROFILE CARD — hero right column
+        ============================================================ */
+        .profile-card {
+            background: rgba(15, 30, 70, 0.82);
+            border: 1px solid rgba(217, 177, 55, 0.22);
+            border-radius: 1.75rem;
+            backdrop-filter: blur(12px);
+            padding: 2rem 1.75rem;
+            box-shadow: 0 24px 60px rgba(10, 20, 47, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.04);
+        }
+
+        .profile-divider {
+            border: none;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            margin: 1rem 0;
+        }
+
+        .profile-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.65rem 0;
+        }
+
+        .profile-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 0.6rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1rem;
+        }
+
+        .profile-label {
+            font-size: 0.7rem;
+            color: rgba(232, 237, 245, 0.45);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 0.15rem;
+        }
+
+        .profile-value {
+            font-size: 1rem;
+            font-weight: 800;
+            color: #FFFFFF;
+            line-height: 1.2;
+        }
+
+        .profile-badge-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+
+        .profile-badge {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(217, 177, 55, 0.18);
+            border-radius: 0.9rem;
+            padding: 0.85rem 1rem;
+            text-align: center;
+        }
+
+        .profile-badge .badge-number {
+            font-size: 2.2rem;
+            font-weight: 900;
+            line-height: 1;
+            background: linear-gradient(135deg, #D9B137, #F0CB5A);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .profile-badge .badge-label {
+            font-size: 0.68rem;
+            color: rgba(232, 237, 245, 0.5);
+            font-weight: 600;
+            margin-top: 0.25rem;
+        }
+
+        .profile-qr {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 1rem;
+            padding: 0.85rem 1rem;
+        }
+
+        .profile-qr-code {
+            background: #fff;
+            border-radius: 0.5rem;
+            padding: 6px;
+            flex-shrink: 0;
+        }
+
+        .cta-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .cta-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: rgba(217, 177, 55, 0.12);
+            border: 1px solid rgba(217, 177, 55, 0.3);
+            color: #D9B137;
+            border-radius: 2rem;
+            padding: 0.4rem 0.85rem;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body class="overflow-x-hidden">
+    <!-- ============================================================
+         BACKGROUND LAYER 1 — Canvas: slow noise nebula + dot grid
+    ============================================================ -->
+    <canvas id="bg-canvas" aria-hidden="true"></canvas>
+
+    <!-- BACKGROUND LAYER 2 — Parallax Khenchela Map SVG -->
+    <div id="parallax-map" aria-hidden="true">
+        <svg viewBox="0 0 800 900" xmlns="http://www.w3.org/2000/svg" style="
+                position:absolute;
+                top:50%; left:50%;
+                transform:translate(-50%,-50%);
+                width: min(90vw, 860px);
+                height: auto;
+                opacity: 0.10;
+                pointer-events: none;
+                transform-origin: center center;
+            ">
+            <defs>
+                <!-- Gold accent gradient for key roads/borders -->
+                <linearGradient id="goldLine" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#D9B137" stop-opacity="0" />
+                    <stop offset="50%" stop-color="#D9B137" stop-opacity="1" />
+                    <stop offset="100%" stop-color="#D9B137" stop-opacity="0" />
+                </linearGradient>
+                <!-- Soft blue fill for the wilaya shape -->
+                <linearGradient id="wilayaFill" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#2A4B9A" stop-opacity="0.45" />
+                    <stop offset="100%" stop-color="#0F1E46" stop-opacity="0.08" />
+                </linearGradient>
+                <!-- Glow filter for city beacon -->
+                <filter id="mapGlow" x="-30%" y="-30%" width="160%" height="160%">
+                    <feGaussianBlur stdDeviation="5" result="blur" />
+                    <feMerge>
+                        <feMergeNode in="blur" />
+                        <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                </filter>
+                <!-- Stronger glow for centre beacon -->
+                <filter id="beaconGlow" x="-60%" y="-60%" width="220%" height="220%">
+                    <feGaussianBlur stdDeviation="10" result="blur" />
+                    <feMerge>
+                        <feMergeNode in="blur" />
+                        <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                </filter>
+            </defs>
+
+            <!-- Wilaya outer boundary (stylized artistic shape) -->
+            <path class="map-route" d="M 400 40
+                   C 460 50, 530 70, 570 120
+                   C 615 175, 620 250, 600 310
+                   C 582 365, 545 395, 540 440
+                   C 534 488, 550 530, 530 570
+                   C 510 610, 465 640, 420 660
+                   C 375 680, 320 685, 275 670
+                   C 228 655, 185 620, 165 575
+                   C 142 525, 155 470, 145 420
+                   C 135 368, 100 330, 95 280
+                   C 88 225, 110 165, 150 120
+                   C 195 70, 260 40, 320 34
+                   Z" fill="url(#wilayaFill)" stroke="rgba(217,177,55,0.5)" stroke-width="1.8"
+                filter="url(#mapGlow)" />
+
+            <!-- Internal district divisions (dashed) -->
+            <g class="map-route" stroke="rgba(160,195,255,0.28)" stroke-width="0.9" fill="none" stroke-dasharray="7 5">
+                <line x1="350" y1="80" x2="300" y2="350" />
+                <line x1="430" y1="90" x2="500" y2="400" />
+                <line x1="200" y1="200" x2="580" y2="280" />
+                <line x1="160" y1="350" x2="600" y2="380" />
+                <line x1="250" y1="500" x2="560" y2="490" />
+                <line x1="130" y1="430" x2="350" y2="650" />
+                <line x1="470" y1="300" x2="540" y2="560" />
+                <!-- Extra district lines -->
+                <line x1="280" y1="120" x2="240" y2="400" />
+                <line x1="500" y1="150" x2="550" y2="480" />
+                <line x1="175" y1="290" x2="450" y2="340" />
+            </g>
+
+            <!-- Main road network (gold tint) -->
+            <g class="map-route" stroke="rgba(217,177,55,0.28)" stroke-width="2" fill="none">
+                <!-- N-S highway -->
+                <path d="M 350 80 Q 360 200 355 350 Q 350 480 330 660" />
+                <!-- E-W main road -->
+                <path d="M 130 310 Q 250 320 400 315 Q 530 310 630 305" />
+                <!-- Northern cross -->
+                <path d="M 180 180 Q 300 260 420 260 Q 500 260 570 280" />
+                <!-- Southern cross -->
+                <path d="M 200 470 Q 340 460 460 470 Q 540 478 580 490" />
+                <!-- Diagonal route -->
+                <path d="M 165 575 Q 240 520 310 480 Q 380 440 440 395" />
+                <!-- Northeast spur -->
+                <path d="M 500 150 Q 540 220 560 300" />
+                <!-- Southwest spur -->
+                <path d="M 175 395 Q 190 480 200 560" />
+            </g>
+
+            <!-- City beacon: Khenchela centre — pulsing gold ring + white core -->
+            <circle cx="355" cy="315" r="22" fill="rgba(217,177,55,0.08)" filter="url(#beaconGlow)">
+                <animate attributeName="r" values="18;28;18" dur="3.5s" repeatCount="indefinite" />
+                <animate attributeName="opacity" values="0.4;0.08;0.4" dur="3.5s" repeatCount="indefinite" />
+            </circle>
+            <circle cx="355" cy="315" r="10" fill="#D9B137" opacity="0.92" filter="url(#mapGlow)">
+                <animate attributeName="r" values="10;14;10" dur="3.5s" repeatCount="indefinite" />
+                <animate attributeName="opacity" values="0.92;0.5;0.92" dur="3.5s" repeatCount="indefinite" />
+            </circle>
+            <circle cx="355" cy="315" r="4" fill="#ffffff" opacity="0.98" />
+
+            <!-- Secondary city markers -->
+            <g fill="rgba(217,177,55,0.55)">
+                <circle cx="200" cy="220" r="5.5" />
+                <circle cx="500" cy="240" r="5.5" />
+                <circle cx="180" cy="430" r="5.5" />
+                <circle cx="510" cy="460" r="5.5" />
+                <circle cx="300" cy="600" r="5.5" />
+                <circle cx="450" cy="570" r="5.5" />
+                <!-- Extra minor markers -->
+                <circle cx="280" cy="130" r="4" />
+                <circle cx="520" cy="180" r="4" />
+                <circle cx="150" cy="320" r="4" />
+                <circle cx="580" cy="340" r="4" />
+            </g>
+
+            <!-- Gold connecting lines from centre to suburbs -->
+            <g stroke="url(#goldLine)" stroke-width="0.9" opacity="0.45">
+                <line x1="355" y1="315" x2="200" y2="220" />
+                <line x1="355" y1="315" x2="500" y2="240" />
+                <line x1="355" y1="315" x2="180" y2="430" />
+                <line x1="355" y1="315" x2="510" y2="460" />
+                <line x1="355" y1="315" x2="300" y2="600" />
+                <line x1="355" y1="315" x2="450" y2="570" />
+                <line x1="355" y1="315" x2="280" y2="130" />
+                <line x1="355" y1="315" x2="520" y2="180" />
+            </g>
+
+            <!-- Decorative outer ring -->
+            <rect x="10" y="10" width="780" height="880" rx="32" fill="none" stroke="rgba(217,177,55,0.1)"
+                stroke-width="1" stroke-dasharray="14 7" />
+
+            <!-- Inner decorative ring -->
+            <rect x="30" y="30" width="740" height="840" rx="28" fill="none" stroke="rgba(140,180,255,0.06)"
+                stroke-width="0.8" stroke-dasharray="4 10" />
+        </svg>
+    </div>
+
+    <!-- BACKGROUND LAYER 3 — Gold scan-line accent (vertical) -->
+    <div id="scan-line" aria-hidden="true"></div>
+
+    <!-- BACKGROUND LAYER 4 — Gold scan-line accent (horizontal) -->
+    <div id="scan-line-h" aria-hidden="true"></div>
+
+    <!-- BACKGROUND LAYER 5 — Ambient CSS Orbs (no JS needed) -->
+    <div class="bg-orb bg-orb-blue" aria-hidden="true"></div>
+    <div class="bg-orb bg-orb-gold" aria-hidden="true"></div>
+
+    <!-- Premium Header / Navbar -->
+    <header id="main-header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500">
+        <!-- Navbar Container -->
+        <div class="container mx-auto px-4 md:px-6 py-4">
+            <nav
+                class="glass-nav relative flex items-center justify-between gap-6 rounded-2xl shadow-2xl px-4 md:px-6 py-3 md:py-4">
+                <!-- Left: Brand Logo & Name -->
+                <a href="#hero" class="flex items-center gap-3 group">
+                    <!-- Logo Icon -->
+                    <div
+                        class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-jj-gold to-jj-gold-light flex items-center justify-center text-jj-dark-blue shadow-lg shadow-jj-gold/30 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-hands-helping text-lg md:text-xl"></i>
+                    </div>
+                    <!-- Brand Text -->
+                    <div class="text-right">
+                        <h1 class="text-base md:text-lg font-black text-white leading-tight">الأستاذ حناشي بوزيد</h1>
+                        <div class="flex flex-col gap-0.5">
+                            <p class="text-[10px] md:text-xs text-white/60 font-semibold">مرشح المجلس الشعبي الوطني - 2
+                                جويلية</p>
+                            <div class="flex gap-2 items-center">
+                                <span
+                                    class="bg-white/10 text-white px-2 py-0.5 rounded text-[8px] md:text-[9px] font-black">قائمة:
+                                    14</span>
+                                <span
+                                    class="bg-jj-gold/20 text-jj-gold px-2 py-0.5 rounded text-[8px] md:text-[9px] font-black">مترشح:
+                                    2</span>
+                                <span class="text-[9px] md:text-[10px] text-jj-gold font-bold opacity-90">حزب جيل
+                                    جديد</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Center: Main Navigation -->
+                <ul class="hidden lg:flex items-center gap-1">
+                    <li class="nav-item">
+                        <a href="#hero"
+                            class="relative px-5 py-3 text-sm md:text-base font-bold text-white/70 hover:text-white transition-colors duration-300">
+                            الرئيسية
+                            <span class="nav-underline"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#about"
+                            class="relative px-5 py-3 text-sm md:text-base font-bold text-white/70 hover:text-white transition-colors duration-300">
+                            عن المرشح
+                            <span class="nav-underline"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="discour.html"
+                            class="relative px-5 py-3 text-sm md:text-base font-bold text-white/70 hover:text-white transition-colors duration-300">
+                            خطاب المترشح
+                            <span class="nav-underline"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#program"
+                            class="relative px-5 py-3 text-sm md:text-base font-bold text-white/70 hover:text-white transition-colors duration-300">
+                            البرنامج
+                            <span class="nav-underline"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#news"
+                            class="relative px-5 py-3 text-sm md:text-base font-bold text-white/70 hover:text-white transition-colors duration-300">
+                            الأخبار
+                            <span class="nav-underline"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#volunteer"
+                            class="relative px-5 py-3 text-sm md:text-base font-bold text-white/70 hover:text-white transition-colors duration-300">
+                            تطوع معنا
+                            <span class="nav-underline"></span>
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Right: CTA Buttons -->
+                <div class="flex items-center gap-2 md:gap-3">
+                    <!-- CTA Button -->
+                    <button id="open-vote-modal-2"
+                        class="hidden sm:flex items-center gap-2 btn-gold px-5 md:px-7 py-2.5 md:py-3 rounded-xl text-sm md:text-base shadow-lg">
+                        <span>ادعمنا الآن</span>
+                        <i class="fas fa-arrow-left text-xs"></i>
+                    </button>
+                    <!-- Mobile Menu Toggle -->
+                    <button id="mobile-menu-btn"
+                        class="lg:hidden flex flex-col gap-1.5 w-10 h-10 items-center justify-center rounded-xl hover:bg-white/10 transition-all">
+                        <span class="w-5 h-0.5 bg-white transition-all duration-300" id="bar1"></span>
+                        <span class="w-5 h-0.5 bg-white transition-all duration-300" id="bar2"></span>
+                        <span class="w-5 h-0.5 bg-white transition-all duration-300" id="bar3"></span>
+                    </button>
+                </div>
+            </nav>
+        </div>
+
+        <!-- Full-Screen Mobile Menu -->
+        <div id="mobile-menu" class="fixed inset-0 z-40 hidden">
+            <!-- Backdrop -->
+            <div id="menu-backdrop"
+                class="absolute inset-0 bg-jj-navy/70 backdrop-blur-sm opacity-0 transition-opacity duration-500"></div>
+            <!-- Menu Panel -->
+            <div id="menu-panel"
+                class="absolute inset-y-0 left-0 w-full md:w-[450px] shadow-2xl transform -translate-x-full transition-transform duration-500 ease-in-out border-r border-jj-gold/20">
+                <div class="container h-full flex flex-col py-10">
+                    <!-- Close Button -->
+                    <button id="close-mobile-menu"
+                        class="self-start mb-10 w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-white hover:bg-jj-gold hover:text-jj-dark-blue transition-all duration-300">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                    <!-- Menu Links -->
+                    <nav class="flex flex-col gap-4 flex-1">
+                        <a href="#hero"
+                            class="mobile-nav-link text-3xl sm:text-4xl font-black opacity-0 translate-y-4 transition-all duration-500 group py-3">
+                            الرئيسية
+                            <span
+                                class="block w-0 h-1 bg-jj-gold mt-2 group-hover:w-full transition-all duration-300"></span>
+                        </a>
+                        <a href="#about"
+                            class="mobile-nav-link text-3xl sm:text-4xl font-black opacity-0 translate-y-4 transition-all duration-500 group py-3"
+                            style="transition-delay: 50ms;">
+                            عن المرشح
+                            <span
+                                class="block w-0 h-1 bg-jj-gold mt-2 group-hover:w-full transition-all duration-300"></span>
+                        </a>
+                        <a href="discour.html"
+                            class="mobile-nav-link text-3xl sm:text-4xl font-black opacity-0 translate-y-4 transition-all duration-500 group py-3 text-right w-full"
+                            style="transition-delay: 100ms;">
+                            خطاب المترشح
+                            <span
+                                class="block w-0 h-1 bg-jj-gold mt-2 group-hover:w-full transition-all duration-300"></span>
+                        </a>
+                        <a href="#program"
+                            class="mobile-nav-link text-3xl sm:text-4xl font-black opacity-0 translate-y-4 transition-all duration-500 group py-3"
+                            style="transition-delay: 150ms;">
+                            البرنامج
+                            <span
+                                class="block w-0 h-1 bg-jj-gold mt-2 group-hover:w-full transition-all duration-300"></span>
+                        </a>
+                        <a href="#news"
+                            class="mobile-nav-link text-3xl sm:text-4xl font-black opacity-0 translate-y-4 transition-all duration-500 group py-3"
+                            style="transition-delay: 150ms;">
+                            الأخبار
+                            <span
+                                class="block w-0 h-1 bg-jj-gold mt-2 group-hover:w-full transition-all duration-300"></span>
+                        </a>
+                        <a href="#volunteer"
+                            class="mobile-nav-link text-3xl sm:text-4xl font-black opacity-0 translate-y-4 transition-all duration-500 group py-3"
+                            style="transition-delay: 200ms;">
+                            تطوع معنا
+                            <span
+                                class="block w-0 h-1 bg-jj-gold mt-2 group-hover:w-full transition-all duration-300"></span>
+                        </a>
+                    </nav>
+                    <!-- CTA Button -->
+                    <div class="mt-10 pt-10 border-t border-white/10">
+                        <button id="mobile-cta"
+                            class="block w-full btn-gold py-5 rounded-2xl font-black text-xl text-center shadow-xl hover:-translate-y-1 transition-all duration-300">
+                            سجل دعمك الآن
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-20">
+        <!-- Hero Section -->
+        <section id="hero" class="relative min-h-[88vh] flex items-center pt-8 md:pt-10 overflow-hidden">
+            <div class="container mx-auto px-4 md:px-6 grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+                <!-- Text Content -->
+                <div class="z-10 order-2 md:order-1 scroll-animate">
+                    <span
+                        class="inline-flex items-center gap-2 bg-gradient-to-l from-green-600 to-red-600 text-white px-4 py-1.5 rounded-full text-xs md:text-sm font-bold mb-5 shadow-lg">
+                        <i class="fas fa-calendar-alt text-xs"></i>
+                        انتخابات تشريعية 2 جويلية 2026
+                    </span>
+
+                    <!-- Election Info Badges -->
+                    <div class="flex flex-wrap gap-3 mb-5 scroll-animate">
+                        <!-- Badge: List number -->
+                        <div class="card-navy rounded-xl px-4 py-2.5 flex items-center gap-3 react-motion">
+                            <div
+                                class="bg-jj-gold text-jj-dark-blue w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center font-black text-xl md:text-2xl">
+                                14</div>
+                            <div>
+                                <p class="text-[10px] md:text-xs text-white/50">القائمة الانتخابية</p>
+                                <p class="font-bold text-xs md:text-sm text-jj-gold">رقم 14</p>
+                            </div>
+                        </div>
+                        <!-- Badge: Candidate number -->
+                        <div class="card-navy rounded-xl px-4 py-2.5 flex items-center gap-3">
+                            <div
+                                class="bg-white/15 text-white w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center font-black text-xl md:text-2xl">
+                                2</div>
+                            <div>
+                                <p class="text-[10px] md:text-xs text-white/50">رقم المترشح</p>
+                                <p class="font-bold text-xs md:text-sm text-white">رقم 2</p>
+                            </div>
+                        </div>
+                        <!-- Badge: Letter -->
+                        <a href="discour.html"
+                            class="card-navy rounded-xl px-4 py-2.5 flex items-center gap-3 hover:border-jj-gold/50 hover:scale-105 transition-all group">
+                            <div
+                                class="bg-jj-gold text-jj-dark-blue w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center group-hover:rotate-12 transition-transform duration-300">
+                                <i class="fas fa-file-alt text-lg md:text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] md:text-xs text-white/50">خطاب</p>
+                                <p class="font-black text-xs md:text-sm text-white">المترشح</p>
+                            </div>
+                        </a>
+                    </div>
+
+                    <h2
+                        class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-4 md:mb-6 !leading-[1.3] scroll-animate">
+                        جيل جديد،<span class="text-jj-gold"> فكر جديد</span>،<br class="hidden md:block">جزائر جديدة
+                    </h2>
+                    <p class="text-base md:text-lg text-white/70 mb-6 md:mb-8 leading-relaxed max-w-xl scroll-animate">
+                        أستاذ جامعي، رئيس قسم العلوم والتكنولوجيا بجامعة خنشلة، نائب مدير الجامعة سابقاً. معاً نُنشئ
+                        مستقبلاً أفضل لجيلنا وأجيالنا القادمة.
+                    </p>
+
+                    <!-- Vote Counter Block -->
+                    <div class="mb-8 md:mb-10 p-6 md:p-8 card-navy rounded-3xl scroll-animate">
+                        <div class="text-center">
+                            <p class="text-sm md:text-base text-white/50 font-semibold mb-2">عدد التوقيعات المجمعة</p>
+                            <div class="flex items-baseline justify-center gap-3 mb-4">
+                                <span id="hero-vote-counter"
+                                    class="text-5xl sm:text-6xl md:text-7xl font-extrabold text-jj-gold transition-all duration-300">0</span>
+                                <span class="text-3xl md:text-4xl font-bold text-white/40">✓</span>
+                            </div>
+                            <div class="w-full progress-track rounded-full h-2.5 mb-2">
+                                <div id="hero-vote-progress"
+                                    class="bg-gradient-to-r from-jj-gold to-jj-gold-light h-2.5 rounded-full transition-all duration-1000 ease-out"
+                                    style="width:0%"></div>
+                            </div>
+                            <p class="text-xs md:text-sm text-white/40">الهدف: 2,500 توقيع</p>
+                        </div>
+                    </div>
+
+                    <!-- Hero Vote Trigger -->
+                    <button id="open-vote-modal"
+                        class="btn-gold px-8 md:px-12 py-4 rounded-2xl text-base md:text-lg shadow-xl transition-all flex items-center justify-center gap-3 hover:scale-105 scroll-animate">
+                        <span>سجل دعمك الآن</span>
+                        <i class="fas fa-vote-yea text-lg md:text-xl"></i>
+                    </button>
+                </div>
+
+                <!-- Candidate Profile Card (replaces full-size photo) -->
+                <div class="relative order-1 md:order-2 scroll-animate">
+                    <div class="profile-card">
+
+                        <!-- Header: Name + Party -->
+                        <div class="flex items-center gap-4 mb-4">
+                            <div
+                                class="w-14 h-14 rounded-xl bg-gradient-to-br from-jj-gold to-jj-gold-light flex items-center justify-center text-jj-dark-blue shadow-lg shadow-jj-gold/30 flex-shrink-0">
+                                <i class="fas fa-user-tie text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="text-white/50 text-xs font-semibold uppercase tracking-widest mb-0.5">المترشح
+                                </p>
+                                <h3 class="text-white font-black text-xl md:text-2xl leading-tight">حناشي بوزيد</h3>
+                                <p class="text-jj-gold text-xs font-bold mt-0.5">حزب جيل جديد &mdash; ولاية خنشلة</p>
+                            </div>
+                        </div>
+
+                        <hr class="profile-divider">
+
+                        <!-- Election Numbers Grid -->
+                        <div class="profile-badge-grid">
+                            <div class="profile-badge">
+                                <div class="badge-number">14</div>
+                                <div class="badge-label">رقم القائمة</div>
+                            </div>
+                            <div class="profile-badge">
+                                <div class="badge-number">2</div>
+                                <div class="badge-label">رقم المترشح</div>
+                            </div>
+                        </div>
+
+                        <hr class="profile-divider">
+
+                        <!-- Election Date -->
+                        <div class="profile-row">
+                            <div class="profile-icon bg-jj-gold/15 text-jj-gold">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <div>
+                                <p class="profile-label">تاريخ الانتخاب</p>
+                                <p class="profile-value">2 جويلية 2026</p>
+                            </div>
+                        </div>
+
+                        <!-- Role -->
+                        <div class="profile-row">
+                            <div class="profile-icon bg-white/10 text-white/70">
+                                <i class="fas fa-graduation-cap"></i>
+                            </div>
+                            <div>
+                                <p class="profile-label">المنصب</p>
+                                <p class="profile-value text-sm">رئيس قسم العلوم والتكنولوجيا &bull; جامعة خنشلة</p>
+                            </div>
+                        </div>
+
+                        <!-- Election Type -->
+                        <div class="profile-row">
+                            <div class="profile-icon bg-white/10 text-white/70">
+                                <i class="fas fa-landmark"></i>
+                            </div>
+                            <div>
+                                <p class="profile-label">نوع الانتخاب</p>
+                                <p class="profile-value text-sm">المجلس الشعبي الوطني &mdash; دورة 2026</p>
+                            </div>
+                        </div>
+
+                        <hr class="profile-divider">
+
+                        <!-- QR Code + Website -->
+                        <div class="profile-qr mb-4">
+                            <!-- Inline QR Code (SVG representation) -->
+                            <div class="profile-qr-code">
+                                <svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"
+                                    style="display:block">
+                                    <!-- QR finder patterns -->
+                                    <rect width="64" height="64" fill="white" />
+                                    <!-- Top-left finder -->
+                                    <rect x="4" y="4" width="20" height="20" rx="2" fill="#0F1E46" />
+                                    <rect x="8" y="8" width="12" height="12" rx="1" fill="white" />
+                                    <rect x="11" y="11" width="6" height="6" fill="#0F1E46" />
+                                    <!-- Top-right finder -->
+                                    <rect x="40" y="4" width="20" height="20" rx="2" fill="#0F1E46" />
+                                    <rect x="44" y="8" width="12" height="12" rx="1" fill="white" />
+                                    <rect x="47" y="11" width="6" height="6" fill="#0F1E46" />
+                                    <!-- Bottom-left finder -->
+                                    <rect x="4" y="40" width="20" height="20" rx="2" fill="#0F1E46" />
+                                    <rect x="8" y="44" width="12" height="12" rx="1" fill="white" />
+                                    <rect x="11" y="47" width="6" height="6" fill="#0F1E46" />
+                                    <!-- Data modules (simplified pattern) -->
+                                    <rect x="28" y="4" width="4" height="4" fill="#0F1E46" />
+                                    <rect x="34" y="4" width="4" height="4" fill="#0F1E46" />
+                                    <rect x="28" y="10" width="4" height="4" fill="#0F1E46" />
+                                    <rect x="34" y="10" width="4" height="4" fill="#0F1E46" />
+                                    <rect x="28" y="16" width="4" height="4" fill="#0F1E46" />
+                                    <rect x="4" y="28" width="4" height="4" fill="#0F1E46" />
+                                    <rect x="10" y="28" width="4" height="4" fill="#0F1E46" />
+                                    <rect x="16" y="28" width="4" height="4" fill="#0F1E46" />
+                                    <rect x="4" y="34" width="4" height="4" fill="#0F1E46" />
+                                    <rect x="16" y="34" width="4" height="4" fill="#0F1E46" />
+                                    <rect x="28" y="28" width="4" height="4" fill="#0F1E46" />
+                                    <rect x="34" y="28" width="4" height="4" fill="#0F1E46" />
+                                    <rect x="40" y="28" width="4" height="4" fill="#0F1E46" />
+                                    <rect x="46" y="28" width="4" height="4" fill="#0F1E46" />
+                                    <rect x="52" y="28" width="4" height="4" fill="#0F1E46" />
+                                    <rect x="58" y="28" width="4" height="4" fill="#0F1E46" />
+                                    <rect x="28" y="34" width="4" height="4" fill="#0F1E46" />
+                                    <rect x="40" y="34" width="4" height="4" fill="#0F1E46" />
+                                    <rect x="52" y="34" width="4" height="4" fill="#0F1E46" />
+                                    <rect x="28" y="40" width="4" height="4" fill="#0F1E46" />
+                                    <rect x="34" y="46" width="4" height="4" fill="#0F1E46" />
+                                    <rect x="46" y="40" width="4" height="4" fill="#0F1E46" />
+                                    <rect x="52" y="46" width="4" height="4" fill="#0F1E46" />
+                                    <rect x="34" y="52" width="4" height="4" fill="#0F1E46" />
+                                    <rect x="40" y="52" width="4" height="4" fill="#0F1E46" />
+                                    <rect x="52" y="52" width="4" height="4" fill="#0F1E46" />
+                                    <rect x="58" y="52" width="4" height="4" fill="#0F1E46" />
+                                    <rect x="58" y="40" width="4" height="4" fill="#0F1E46" />
+                                    <rect x="28" y="58" width="4" height="4" fill="#0F1E46" />
+                                    <rect x="46" y="58" width="4" height="4" fill="#0F1E46" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="profile-label mb-1">التصويت الإلكتروني</p>
+                                <a href="https://hannachibouzid.com" target="_blank" rel="noopener"
+                                    class="text-jj-gold font-bold text-sm hover:underline">hannachibouzid.com</a>
+                                <p class="text-white/40 text-xs mt-1">امسح الرمز للدعم الإلكتروني</p>
+                            </div>
+                        </div>
+
+                        <!-- Calls to Action chips -->
+                        <div class="cta-row">
+                            <span class="cta-chip">
+                                <i class="fas fa-hand-holding-heart text-xs"></i>
+                                ادعم جيلنا الجديد
+                            </span>
+                            <span class="cta-chip">
+                                <i class="fas fa-laptop text-xs"></i>
+                                تصويتك الإلكتروني
+                            </span>
+                            <span class="cta-chip">
+                                <i class="fas fa-vote-yea text-xs"></i>
+                                إنتخب رقم 14
+                            </span>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section — compact teaser with CTA button -->
+        <section id="about" class="py-12 md:py-20 section-light">
+            <div class="container mx-auto px-4 md:px-6">
+                <div class="grid md:grid-cols-3 gap-8 md:gap-12 items-center">
+
+                    <!-- Photo -->
+                    <div class="order-2 md:order-1 md:col-span-1 scroll-animate">
+                        <div
+                            class="relative overflow-hidden rounded-xl shadow-2xl border border-white/10 bg-white/5 p-2 react-motion">
+                            <img src="candidat-hanachi10.jpg" alt="الأستاذ حناشي بوزيد"
+                                class="w-full h-auto object-cover rounded-md" loading="lazy">
+                        </div>
+                    </div>
+
+                    <!-- Teaser Text + CTA -->
+                    <div class="order-1 md:order-2 md:col-span-2 scroll-animate">
+                        <h4 class="text-jj-gold font-bold mb-2 text-sm md:text-base">من هو حناشي بوزيد؟</h4>
+                        <h2 class="text-2xl md:text-3xl font-black mb-4 md:mb-6 text-white">أستاذ جامعي ومهندس متميز
+                        </h2>
+
+                        <!-- Key highlights grid -->
+                        <div class="grid sm:grid-cols-3 gap-3 mb-7">
+                            <div class="card-navy rounded-xl p-4 text-center">
+                                <div class="text-jj-gold text-2xl mb-1"><i class="fas fa-graduation-cap"></i></div>
+                                <p class="text-white font-bold text-sm">مهندس دولة</p>
+                                <p class="text-white/50 text-xs">هندسة ميكانيكية • الأول على الدفعة</p>
+                            </div>
+                            <div class="card-navy rounded-xl p-4 text-center">
+                                <div class="text-jj-gold text-2xl mb-1"><i class="fas fa-chalkboard-teacher"></i></div>
+                                <p class="text-white font-bold text-sm">أستاذ جامعي</p>
+                                <p class="text-white/50 text-xs">رئيس قسم علوم وتكنولوجيا</p>
+                            </div>
+                            <div class="card-navy rounded-xl p-4 text-center">
+                                <div class="text-jj-gold text-2xl mb-1"><i class="fas fa-university"></i></div>
+                                <p class="text-white font-bold text-sm">نائب مدير جامعة</p>
+                                <p class="text-white/50 text-xs">جامعة عباس لغرور خنشلة</p>
+                            </div>
+                        </div>
+
+                        <p class="text-white/65 text-sm md:text-base leading-relaxed mb-8">
+                            مسيرة علمية ومهنية حافلة بالإنجازات — من مهندس متخرج بامتياز إلى رئيس قسم ونائب مدير جامعة،
+                            مروراً بتجربة متكاملة في ميدان التكوين والإدارة والبحث العلمي.
+                        </p>
+
+                        <!-- Single CTA Button -->
+                        <button id="open-cv-modal"
+                            class="btn-gold px-8 py-4 rounded-2xl text-base font-black shadow-xl transition-all flex items-center gap-3 hover:scale-105 group">
+                            <i class="fas fa-id-badge text-xl group-hover:rotate-6 transition-transform"></i>
+                            <span>اكتشف مسيرة الأستاذ كاملة</span>
+                            <i class="fas fa-arrow-left text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Program Section -->
+        <section id="program" class="py-12 md:py-20 section-light">
+            <div class="container mx-auto px-4 md:px-6">
+                <div class="text-center max-w-2xl mx-auto mb-10 md:mb-16">
+                    <h2 class="text-2xl md:text-3xl font-black mb-3 md:mb-4 text-white">البرنامج الانتخابي</h2>
+                    <p class="text-white/55 text-sm md:text-base">خطة واضحة لبناء جزائر جديدة مع جيل الجديد</p>
+                </div>
+                <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
+                    <!-- Program Card 1 -->
+                    <div
+                        class="card-navy p-5 md:p-8 rounded-2xl hover:border-jj-gold/40 group card-hover transition-all">
+                        <div
+                            class="w-12 h-12 md:w-14 md:h-14 bg-jj-gold/15 rounded-xl flex items-center justify-center text-jj-gold text-xl md:text-2xl mb-4 md:mb-6 group-hover:bg-jj-gold group-hover:text-jj-dark-blue transition-colors">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3 class="text-lg md:text-xl font-bold mb-2 md:mb-3 text-white">من أجل دولة القانون ومؤسسات
+                            قوية</h3>
+                        <p class="text-xs md:text-sm text-white/55 leading-relaxed">صوت خنشلة مسموع، تنمية عادلة لكل
+                            البلديات، ومحاربة حازمة للفساد..</p>
+                    </div>
+                    <!-- Program Card 2 -->
+                    <div
+                        class="card-navy p-5 md:p-8 rounded-2xl hover:border-jj-gold/40 group card-hover transition-all">
+                        <div
+                            class="w-12 h-12 md:w-14 md:h-14 bg-jj-gold/15 rounded-xl flex items-center justify-center text-jj-gold text-xl md:text-2xl mb-4 md:mb-6 group-hover:bg-jj-gold group-hover:text-jj-dark-blue transition-colors">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3 class="text-lg md:text-xl font-bold mb-2 md:mb-3 text-white">إدارة عصرية وخدمات رقمية
+                            للمواطن</h3>
+                        <p class="text-xs md:text-sm text-white/55 leading-relaxed">نحو رقمنة شاملة للإدارة المحلية
+                            بخنشلة: خدمات أسرع، وثائق أسهل..</p>
+                    </div>
+                    <!-- Program Card 3 -->
+                    <div
+                        class="card-navy p-5 md:p-8 rounded-2xl hover:border-jj-gold/40 group card-hover transition-all">
+                        <div
+                            class="w-12 h-12 md:w-14 md:h-14 bg-jj-gold/15 rounded-xl flex items-center justify-center text-jj-gold text-xl md:text-2xl mb-4 md:mb-6 group-hover:bg-jj-gold group-hover:text-jj-dark-blue transition-colors">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h3 class="text-lg md:text-xl font-bold mb-2 md:mb-3 text-white">اقتصاد محلي قوي وأمن غذائي
+                            مستدام</h3>
+                        <p class="text-xs md:text-sm text-white/55 leading-relaxed">استثمار ذكي في فِلاحة وسياحة خنشلة..
+                            لبناء اقتصاد محلي مستدام يخلق الثروة والوظائف.</p>
+                    </div>
+                    <!-- Program Card 4 -->
+                    <div
+                        class="card-navy p-5 md:p-8 rounded-2xl hover:border-jj-gold/40 group card-hover transition-all">
+                        <div
+                            class="w-12 h-12 md:w-14 md:h-14 bg-jj-gold/15 rounded-xl flex items-center justify-center text-jj-gold text-xl md:text-2xl mb-4 md:mb-6 group-hover:bg-jj-gold group-hover:text-jj-dark-blue transition-colors">
+                            <i class="fas fa-hand-holding-heart"></i>
+                        </div>
+                        <h3 class="text-lg md:text-xl font-bold mb-2 md:mb-3 text-white">عدالة اجتماعية واستثمار في
+                            الإنسان</h3>
+                        <p class="text-xs md:text-sm text-white/55 leading-relaxed">الاستثمار في الإنسان أساس التنمية..
+                            رعاية صحية، تعليم متطور، ودعم دائم للأسرة الخنشلية.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- News Section -->
+        <section id="news" class="py-12 md:py-20 bg-white/95 backdrop-blur-sm">
+            <div class="container mx-auto px-4 md:px-6">
+                <div class="flex flex-col md:flex-row justify-between items-end mb-8 md:mb-12 gap-4 md:gap-6">
+                    <div>
+                        <h2 class="text-2xl md:text-3xl font-black mb-3 md:mb-4">آخر الأخبار والنشاطات</h2>
+                        <p class="text-dz-slate/60 text-sm md:text-base">تابعوا تحركات الحملة الانتخابية لحزب جيل الجديد
+                        </p>
+                    </div>
+                    <button id="show-all-news-btn"
+                        class="text-jj-dark-blue font-bold flex items-center gap-2 hover:underline text-sm md:text-base">
+                        <span id="btn-text">عرض جميع الأخبار</span>
+                        <i class="fas fa-arrow-left transition-transform duration-300" id="btn-icon"></i>
+                    </button>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-8" id="news-grid">
+                    <!-- News Item 1 -->
+                    <a href="news.html?id=babar" class="group cursor-pointer news-item">
+                        <div class="overflow-hidden rounded-2xl mb-4">
+                            <img src="babar.jpg" alt="إطلاق الحملة"
+                                class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500">
+                        </div>
+                        <span class="text-jj-dark-blue text-xs font-bold uppercase tracking-wider">إطلاق الحملة</span>
+                        <h3 class="text-lg font-bold mt-2 group-hover:text-jj-dark-blue transition-colors">مداومة في
+                            بلدية بابار
+                        </h3>
+                        <p class="text-sm text-dz-slate/60 mt-2">تم إطلاق الحملة الانتخابية في بلدية بابار بحضور جمع
+                            غفير من المواطنين الكرام ...</p>
+                    </a>
+
+                    <!-- News Item 2 -->
+                    <a href="news.html?id=boujalbana" class="group cursor-pointer news-item">
+                        <div class="overflow-hidden rounded-2xl mb-4">
+                            <img src="boujalbana.jpg" alt="لقاء مع الشباب"
+                                class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500">
+                        </div>
+                        <span class="text-jj-dark-blue text-xs font-bold uppercase tracking-wider">مداومة</span>
+                        <h3 class="text-lg font-bold mt-2 group-hover:text-jj-dark-blue transition-colors">مداومة في حي
+                            بوجلبانة</h3>
+                        <p class="text-sm text-dz-slate/60 mt-2">تم اليوم تنظيم مداومة على مستوى حي بوجلبانة العريق
+                            ببلدية خنشلة بحضور جمع من المواطنين...</p>
+                    </a>
+
+                    <!-- News Item 3 -->
+                    <a href="news.html?id=university" class="group cursor-pointer news-item">
+                        <div class="overflow-hidden rounded-2xl mb-4">
+                            <img src="candidat-hanachi.jpg" alt="زيارة ميدانية"
+                                class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500">
+                        </div>
+                        <span class="text-jj-dark-blue text-xs font-bold uppercase tracking-wider">زيارة ميدانية</span>
+                        <h3 class="text-lg font-bold mt-2 group-hover:text-jj-dark-blue transition-colors">زيارة تفقدية
+                            لجامعة خنشلة</h3>
+                        <p class="text-sm text-dz-slate/60 mt-2">التقاء مع الأساتذة والطلبة للاستماع لانشغالاتهم
+                            وتطلعاتهم نحو منظومة التعليم العالي...</p>
+                    </a>
+                </div>
+
+                <!-- Extra News (Hidden by default) -->
+                <div id="extra-news" class="grid md:grid-cols-3 gap-8 mt-8 hidden opacity-0 translate-y-10 transition-all duration-700">
+                    <!-- News Item 4 -->
+                    <a href="news.html?id=babar" class="group cursor-pointer news-item">
+                        <div class="overflow-hidden rounded-2xl mb-4">
+                            <img src="babar.jpg" alt="لقاء شعبي"
+                                class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500">
+                        </div>
+                        <span class="text-jj-dark-blue text-xs font-bold uppercase tracking-wider">نشاط جواري</span>
+                        <h3 class="text-lg font-bold mt-2 group-hover:text-jj-dark-blue transition-colors">لقاء شعبي بوسط المدينة</h3>
+                        <p class="text-sm text-dz-slate/60 mt-2">تواصل العمل الجواري بلقاءات مباشرة مع تجار وحرفيي وسط مدينة خنشلة...</p>
+                    </a>
+
+                    <!-- News Item 5 -->
+                    <a href="news.html?id=boujalbana" class="group cursor-pointer news-item">
+                        <div class="overflow-hidden rounded-2xl mb-4">
+                            <img src="boujalbana.jpg" alt="ندوة صحفية"
+                                class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500">
+                        </div>
+                        <span class="text-jj-dark-blue text-xs font-bold uppercase tracking-wider">إعلام</span>
+                        <h3 class="text-lg font-bold mt-2 group-hover:text-jj-dark-blue transition-colors">ندوة صحفية لعرض البرنامج</h3>
+                        <p class="text-sm text-dz-slate/60 mt-2">تنظيم ندوة صحفية بمقر المداومة لعرض المحاور الأساسية للبرنامج الانتخابي...</p>
+                    </a>
+
+                    <!-- News Item 6 -->
+                    <a href="news.html?id=university" class="group cursor-pointer news-item">
+                        <div class="overflow-hidden rounded-2xl mb-4">
+                            <img src="candidat-hanachi.jpg" alt="اجتماع اللجنة"
+                                class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500">
+                        </div>
+                        <span class="text-jj-dark-blue text-xs font-bold uppercase tracking-wider">تنظيم</span>
+                        <h3 class="text-lg font-bold mt-2 group-hover:text-jj-dark-blue transition-colors">اجتماع لجنة الشباب</h3>
+                        <p class="text-sm text-dz-slate/60 mt-2">اجتماع موسع مع لجنة الشباب والمتطوعين لضبط خطة العمل الميدانية للأسبوع الأخير...</p>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Volunteer Section -->
+        <section id="volunteer" class="py-12 md:py-20 relative overflow-hidden">
+            <div class="container mx-auto px-4 md:px-6">
+                <div
+                    class="bg-jj-dark-blue rounded-[1.5rem] md:rounded-[2rem] p-6 md:p-8 lg:p-16 text-white shadow-2xl relative z-10 overflow-hidden">
+                    <!-- Background Accent -->
+                    <div class="absolute -top-16 -right-16 w-40 h-40 md:w-64 md:h-64 bg-white/10 rounded-full blur-3xl">
+                    </div>
+
+                    <div class="grid lg:grid-cols-2 gap-12 items-center relative z-20">
+                        <div>
+                            <h2 class="text-2xl md:text-3xl lg:text-4xl font-black mb-4 md:mb-6">كن جزءاً من الجيل الجديد
+                            </h2>
+                            <p class="text-blue-100 text-base md:text-lg mb-6 md:mb-8 leading-relaxed">
+                                حملتنا تعتمد على سواعد أبناء وآبناء دائرة خنشلة. انضم إلينا وساهم في بناء مستقبل أفضل
+                                لجيلنا.
+                            </p>
+                            <div class="space-y-4">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <span>المشاركة في تنظيم التجمعات</span>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <span>التواصل الرقمي وصناعة المحتوى</span>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <span>توزيع المطويات والعمل الجواري</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-5 md:p-8 rounded-2xl shadow-lg">
+                            <form class="space-y-4 text-dz-slate" id="volunteer-form">
+                                <div class="grid sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-bold mb-2">الاسم الكامل</label>
+                                        <input type="text" id="volunteer-name" placeholder="أدخل اسمك"
+                                            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-jj-dark-blue focus:ring-2 focus:ring-jj-dark-blue/20 outline-none transition-all">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-bold mb-2">رقم الهاتف</label>
+                                        <input type="tel" id="volunteer-phone" placeholder="05 / 06 / 07"
+                                            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-jj-dark-blue focus:ring-2 focus:ring-jj-dark-blue/20 outline-none transition-all text-left"
+                                            dir="ltr">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold mb-2">البريد الإلكتروني</label>
+                                    <input type="email" id="volunteer-email" placeholder="example@mail.com"
+                                        class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-jj-dark-blue focus:ring-2 focus:ring-jj-dark-blue/20 outline-none transition-all text-left"
+                                        dir="ltr">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold mb-2">مجال الاهتمام</label>
+                                    <select id="volunteer-interest"
+                                        class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-jj-dark-blue focus:ring-2 focus:ring-jj-dark-blue/20 outline-none transition-all">
+                                        <option>التنظيم الميداني</option>
+                                        <option>الإعلام والاتصال</option>
+                                        <option>الدعم التقني</option>
+                                        <option>أخرى</option>
+                                    </select>
+                                </div>
+                                <button type="submit" id="volunteer-btn"
+                                    class="w-full bg-jj-gold hover:bg-yellow-600 text-white font-bold md:font-black py-3 md:py-4 rounded-xl shadow-lg transition-all hover:scale-[1.02] text-sm md:text-base">
+                                    إرسال الطلب
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dz-slate text-white pt-12 md:pt-20 pb-8 md:pb-10">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="grid md:grid-cols-4 gap-12 mb-16">
+                <!-- Brand -->
+                <div class="col-span-1 md:col-span-1">
+                    <div class="flex items-center gap-2 mb-6">
+                        <div class="w-10 h-10 bg-jj-dark-blue rounded-lg flex items-center justify-center text-white">
+                            <i class="fas fa-hands-helping"></i>
+                        </div>
+                        <h2 class="text-xl font-bold">الأستاذ حناشي بوزيد</h2>
+                    </div>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                        جيل جديد، فكر جديد، جزائر جديدة. معاً نبني مستقبل أفضل لأبناء وآبناء خنشلة.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#"
+                            class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-jj-dark-blue transition-colors"><i
+                                class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.facebook.com/yazid.yazod"
+                            class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-jj-dark-blue transition-colors"><i
+                                class="fab fa-twitter"></i></a>
+                        <a href="#"
+                            class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-jj-dark-blue transition-colors"><i
+                                class="fab fa-instagram"></i></a>
+                        <a href="#"
+                            class="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-jj-dark-blue transition-colors"><i
+                                class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h3 class="text-lg font-bold mb-6 relative inline-block">
+                        روابط سريعة
+                        <span class="absolute -bottom-2 right-0 w-8 h-1 bg-jj-dark-blue"></span>
+                    </h3>
+                    <ul class="space-y-4 text-gray-400">
+                        <li><a href="#hero" class="hover:text-white transition-colors">الرئيسية</a></li>
+                        <li><a href="#about" class="hover:text-white transition-colors">عن المرشح</a></li>
+                        <li><a href="#program" class="hover:text-white transition-colors">البرنامج الانتخابي</a></li>
+                        <li><a href="#news" class="hover:text-white transition-colors">آخر الأخبار</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact Info -->
+                <div>
+                    <h3 class="text-lg font-bold mb-6 relative inline-block">
+                        اتصل بنا
+                        <span class="absolute -bottom-2 right-0 w-8 h-1 bg-jj-dark-blue"></span>
+                    </h3>
+                    <ul class="space-y-4 text-gray-400">
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-map-marker-alt text-jj-dark-blue mt-1"></i>
+                            <span> ولاية خنشلة</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fas fa-phone text-jj-dark-blue"></i>
+                            <span dir="ltr">+213 600000000</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fas fa-envelope text-jj-dark-blue"></i>
+                            <span>contact@hannachibouzid.com</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Newsletter -->
+                <div>
+                    <h3 class="text-lg font-bold mb-6 relative inline-block">
+                        اشترك في النشرة
+                        <span class="absolute -bottom-2 right-0 w-8 h-1 bg-jj-dark-blue"></span>
+                    </h3>
+                    <p class="text-sm text-gray-400 mb-4">احصل على آخر التحديثات مباشرة في بريدك</p>
+                    <div class="flex">
+                        <input type="email" placeholder="بريدك الإلكتروني"
+                            class="bg-white/5 border-none rounded-r-xl px-4 py-3 w-full outline-none focus:ring-1 focus:ring-jj-dark-blue">
+                        <button class="bg-jj-dark-blue px-4 py-3 rounded-l-xl"><i
+                                class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Copyright -->
+            <div
+                class="border-t border-white/10 pt-10 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500">
+                <p>© 2026  HAFIDI TECH - الاستاذ بوزيد حناشي حزب جيل الجديد. جميع الحقوق محفوظة.</p>
+                <div class="flex gap-6">
+                    <a href="#" class="hover:text-white">سياسة الخصوصية</a>
+                    <a href="#" class="hover:text-white">الشروط والأحكام</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- CV Modal — Full Career Biography -->
+    <div class="modal-overlay" id="cv-modal" role="dialog" aria-modal="true" aria-labelledby="cv-modal-title">
+        <div class="modal-content bg-jj-dark-blue rounded-[2rem] shadow-2xl border border-jj-gold/20 relative overflow-hidden"
+            style="max-width:780px;max-height:90vh;overflow-y:auto;">
+            <!-- Close -->
+            <button id="close-cv-modal"
+                class="absolute top-5 left-5 z-20 w-10 h-10 rounded-xl bg-white/10 hover:bg-jj-gold hover:text-jj-dark-blue text-white transition-all flex items-center justify-center">
+                <i class="fas fa-times text-lg"></i>
+            </button>
+
+            <!-- Header -->
+            <div class="bg-gradient-to-l from-jj-navy to-jj-dark-blue px-8 pt-10 pb-6 border-b border-white/10">
+                <div class="flex items-center gap-5">
+                    <div
+                        class="w-16 h-16 rounded-2xl bg-gradient-to-br from-jj-gold to-jj-gold-light flex items-center justify-center text-jj-dark-blue text-2xl shadow-lg flex-shrink-0">
+                        <i class="fas fa-id-badge"></i>
+                    </div>
+                    <div>
+                        <p id="cv-modal-title" class="text-jj-gold text-xs font-bold uppercase tracking-widest mb-1">
+                            السيرة الذاتية الكاملة</p>
+                        <h2 class="text-white font-black text-2xl md:text-3xl">حناشي بوزيد</h2>
+                        <p class="text-white/50 text-sm mt-0.5">مرشح قائمة 14 • المجلس الشعبي الوطني • 2 جويلية 2026</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CV Body -->
+            <div class="px-6 md:px-10 py-8 space-y-8 text-white/80 text-sm md:text-base leading-relaxed">
+
+                <!-- Section: Formation -->
+                <div>
+                    <h3 class="flex items-center gap-3 text-jj-gold font-black text-base md:text-lg mb-4">
+                        <span class="w-8 h-8 bg-jj-gold/15 rounded-lg flex items-center justify-center text-jj-gold"><i
+                                class="fas fa-graduation-cap text-sm"></i></span>
+                        التكوين العلمي
+                    </h3>
+                    <ul class="space-y-2.5">
+                        <li class="flex items-start gap-3">
+                            <span class="w-1.5 h-1.5 rounded-full bg-jj-gold mt-2 flex-shrink-0"></span>
+                            مهندس دولة في الهندسة الميكانيكية &mdash; تخصص: إنشاء ميكانيكي &mdash; <strong>الأول على
+                                الدفعة</strong> &mdash; المركز الجامعي بأم البواقي
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-1.5 h-1.5 rounded-full bg-jj-gold mt-2 flex-shrink-0"></span>
+                            ماجستير في البناء الميكانيكي «ميكانيكا الكسر» &mdash; المركز الجامعي بأم البواقي
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-1.5 h-1.5 rounded-full bg-white/30 mt-2 flex-shrink-0"></span>
+                            سنة أولى حقوق
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="w-1.5 h-1.5 rounded-full bg-white/30 mt-2 flex-shrink-0"></span>
+                            بكالوريا علوم دقيقة أحرار
+                        </li>
+                    </ul>
+                </div>
+
+                <hr style="border-color:rgba(255,255,255,0.07)">
+
+                <!-- Section: Internships -->
+                <div>
+                    <h3 class="flex items-center gap-3 text-jj-gold font-black text-base md:text-lg mb-4">
+                        <span class="w-8 h-8 bg-jj-gold/15 rounded-lg flex items-center justify-center text-jj-gold"><i
+                                class="fas fa-industry text-sm"></i></span>
+                        التربصات
+                    </h3>
+                    <ul class="space-y-2.5">
+                        <li class="flex items-start gap-3">
+                            <span class="w-1.5 h-1.5 rounded-full bg-jj-gold mt-2 flex-shrink-0"></span>
+                            تربص بشركة ENMTP لمعدات الأشغال العمومية الوطنية &mdash; عين السمارة &mdash; قسنطينة،
+                            الجزائر
+                        </li>
+                    </ul>
+                </div>
+
+                <hr style="border-color:rgba(255,255,255,0.07)">
+
+                <!-- Section: Professional Experience -->
+                <div>
+                    <h3 class="flex items-center gap-3 text-jj-gold font-black text-base md:text-lg mb-4">
+                        <span class="w-8 h-8 bg-jj-gold/15 rounded-lg flex items-center justify-center text-jj-gold"><i
+                                class="fas fa-briefcase text-sm"></i></span>
+                        الخبرة المهنية
+                    </h3>
+                    <ul class="space-y-2.5">
+                        <li class="flex items-start gap-3"><span
+                                class="w-1.5 h-1.5 rounded-full bg-jj-gold mt-2 flex-shrink-0"></span>أستاذ مادة
+                            الرياضيات بكل من متقن صالح جبايلي خنشلة + متوسطة حمادي محمد الصالح خنشلة</li>
+                        <li class="flex items-start gap-3"><span
+                                class="w-1.5 h-1.5 rounded-full bg-jj-gold mt-2 flex-shrink-0"></span>مهندس صيانة عامة
+                            &mdash; وحدة مناجم باريت الجزائر &mdash; مجموعة إينوف &mdash; عين ميمون خنشلة</li>
+                        <li class="flex items-start gap-3"><span
+                                class="w-1.5 h-1.5 rounded-full bg-jj-gold mt-2 flex-shrink-0"></span>أستاذ مساعد بجامعة
+                            عباس لغرور خنشلة</li>
+                        <li class="flex items-start gap-3"><span
+                                class="w-1.5 h-1.5 rounded-full bg-jj-gold mt-2 flex-shrink-0"></span>نائب مدير معهد
+                            العلوم والتكنولوجيا مكلف بالبيداغوجيا &mdash; جامعة عباس لغرور خنشلة</li>
+                        <li class="flex items-start gap-3"><span
+                                class="w-1.5 h-1.5 rounded-full bg-jj-gold mt-2 flex-shrink-0"></span>نائب مدير الجامعة
+                            المكلف بالعلاقات الخارجية والتعاون والتظاهرات العلمية &mdash; جامعة خنشلة</li>
+                        <li class="flex items-start gap-3"><span
+                                class="w-1.5 h-1.5 rounded-full bg-jj-gold mt-2 flex-shrink-0"></span>عضو مجلس إدارة
+                            (ممثل وزير التعليم العالي) &mdash; المعهد الوطني المتخصص في التكوين المهني المجاهد: شرفي
+                            لمير يحيى قايس خنشلة</li>
+                        <li class="flex items-start gap-3"><span
+                                class="w-1.5 h-1.5 rounded-full bg-jj-gold mt-2 flex-shrink-0"></span>تحضير شهادة
+                            دكتوراه في علم المعادن وهندسة المواد &mdash; جامعة عنابة</li>
+                        <li class="flex items-start gap-3"><span
+                                class="w-1.5 h-1.5 rounded-full bg-jj-gold mt-2 flex-shrink-0"></span>عضو منتخب في
+                            اللجنة المتساوية الأعضاء &mdash; جامعة عباس لغرور خنشلة</li>
+                        <li class="flex items-start gap-3"><span
+                                class="w-1.5 h-1.5 rounded-full bg-jj-gold mt-2 flex-shrink-0"></span>عضو اللجنة العلمية
+                            لقسم الهندسة الميكانيكية &mdash; جامعة عباس لغرور خنشلة</li>
+                        <li class="flex items-start gap-3"><span
+                                class="w-1.5 h-1.5 rounded-full bg-jj-gold mt-2 flex-shrink-0"></span>عضو منتخب المجلس
+                            العلمي لكلية العلوم والتكنولوجيا &mdash; جامعة عباس لغرور خنشلة</li>
+                        <li class="flex items-start gap-3"><span
+                                class="w-1.5 h-1.5 rounded-full bg-jj-gold mt-2 flex-shrink-0"></span>عضو منتخب في مجلس
+                            الإدارة للجامعة &mdash; جامعة عباس لغرور خنشلة</li>
+                        <li class="flex items-start gap-3"><span
+                                class="w-1.5 h-1.5 rounded-full bg-jj-gold mt-2 flex-shrink-0"></span><strong
+                                class="text-white">رئيس قسم العلوم والتكنولوجيا</strong> &mdash; بكلية العلوم
+                            والتكنولوجيا &mdash; جامعة عباس لغرور خنشلة</li>
+                        <li class="flex items-start gap-3"><span
+                                class="w-1.5 h-1.5 rounded-full bg-jj-gold mt-2 flex-shrink-0"></span>عضو المجلس العلمي
+                            &mdash; كلية العلوم والتكنولوجيا &mdash; جامعة عباس لغرور خنشلة</li>
+                        <li class="flex items-start gap-3"><span
+                                class="w-1.5 h-1.5 rounded-full bg-jj-gold mt-2 flex-shrink-0"></span>رئيس جمعية النادي
+                            الرياضي الهاوي &mdash; كلية العلوم والتكنولوجيا &mdash; جامعة عباس لغرور خنشلة</li>
+                    </ul>
+                </div>
+
+                <!-- Footer CTA inside modal -->
+                <div
+                    class="bg-jj-gold/10 border border-jj-gold/25 rounded-2xl p-5 flex flex-col sm:flex-row items-center gap-4 mt-2">
+                    <div
+                        class="w-12 h-12 bg-jj-gold/20 rounded-xl flex items-center justify-center text-jj-gold flex-shrink-0">
+                        <i class="fas fa-vote-yea text-xl"></i>
+                    </div>
+                    <div class="text-center sm:text-right">
+                        <p class="text-white font-bold text-sm">ادعم جيلنا الجديد &mdash; صوت على القائمة 14</p>
+                        <p class="text-white/50 text-xs mt-0.5">2 جويلية 2026 &bull; خنشلة</p>
+                    </div>
+                    <button id="cv-modal-vote-btn"
+                        class="sm:mr-auto btn-gold px-6 py-2.5 rounded-xl text-sm font-bold shadow-md flex items-center gap-2">
+                        <i class="fas fa-arrow-left"></i>
+                        سجل دعمك الآن
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Voting Modal -->
+    <div class="modal-overlay" id="vote-modal">
+        <div
+            class="modal-content bg-white p-6 md:p-8 rounded-[2rem] md:rounded-[2.5rem] shadow-2xl border border-gray-100 relative overflow-hidden">
+            <!-- Close Button -->
+            <button id="close-modal"
+                class="absolute top-4 md:top-6 left-4 md:left-6 text-gray-500 hover:text-jj-gold transition-colors text-xl md:text-2xl z-20">
+                <i class="fas fa-times-circle"></i>
+            </button>
+
+            <div class="absolute top-0 right-0 w-32 h-32 bg-jj-dark-blue/5 rounded-full -mr-16 -mt-16"></div>
+
+            <div class="relative z-10">
+                <div class="text-center mb-8">
+                    <div
+                        class="w-16 h-16 bg-jj-dark-blue/10 rounded-2xl flex items-center justify-center text-jj-dark-blue text-3xl mx-auto mb-4">
+                        <i class="fas fa-vote-yea"></i>
+                    </div>
+                    <h3 class="font-black text-2xl mb-2 text-jj-dark-blue">سجل دعمك للمرشح حناشي بوزيد</h3>
+                    <p class="text-gray-700 text-sm">كن جزءاً من جيل جديد وبنِ مستقبل أفضل لخنشلة </p>
+                </div>
+
+                <form id="vote-form" class="flex flex-col gap-5 mb-8">
+                    <div class="space-y-4">
+                        <div class="relative">
+                            <i class="fas fa-user absolute right-4 top-1/2 -translate-y-1/2 text-jj-dark-blue/60"></i>
+                            <input type="text" id="voter-name" placeholder="الاسم واللقب الكامل" required
+                                class="w-full pr-12 pl-4 py-4 rounded-2xl border border-gray-200 bg-gray-50 text-gray-800 focus:bg-white focus:border-jj-dark-blue focus:ring-4 focus:ring-jj-dark-blue/10 outline-none transition-all">
+                        </div>
+                        <div class="relative">
+                            <i
+                                class="fas fa-envelope absolute right-4 top-1/2 -translate-y-1/2 text-jj-dark-blue/60"></i>
+                            <input type="email" id="voter-email" placeholder="البريد الإلكتروني" required
+                                class="w-full pr-12 pl-4 py-4 rounded-2xl border border-gray-200 bg-gray-50 text-gray-800 focus:bg-white focus:border-jj-dark-blue focus:ring-4 focus:ring-jj-dark-blue/10 outline-none transition-all text-right">
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-4">
+                        <button type="submit" id="vote-btn"
+                            class="w-full bg-jj-dark-blue hover:bg-jj-blue text-white py-5 rounded-2xl font-black text-lg shadow-lg shadow-jj-dark-blue/20 transition-all flex items-center justify-center gap-3 active:scale-95">
+                            <span>تأكيد الدعم الآن</span>
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
+
+                        <div class="flex items-center justify-center gap-6 py-2">
+                            <div class="text-center">
+                                <p class="text-[10px] text-jj-dark-blue/60 uppercase tracking-widest mb-1">الداعمون</p>
+                                <p class="text-xl font-black text-jj-dark-blue" id="vote-counter">0</p>
+                            </div>
+                            <div class="h-8 w-[1px] bg-gray-100"></div>
+                            <div class="text-center">
+                                <p class="text-[10px] text-jj-dark-blue/60 uppercase tracking-widest mb-1">الهدف القادم</p>
+                                <p class="text-xl font-black text-jj-dark-blue/40">2,500</p>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Progress Bar -->
+                <div class="w-full bg-gray-50 h-3 rounded-full overflow-hidden border border-gray-100">
+                    <div id="vote-progress"
+                        class="bg-gradient-to-l from-jj-dark-blue to-jj-blue h-full w-0 transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(10,30,80,0.3)]">
+                    </div>
+                </div>
+                <p class="text-[10px] text-center mt-4 text-jj-dark-blue/60" id="vote-msg">سيتم حفظ بياناتكم بكل سرية لدعم
+                    الحملة الرسمية</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Premium Navbar Scroll Effect
+        const header = document.getElementById('main-header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const closeMobileMenuBtn = document.getElementById('close-mobile-menu');
+        const mobileBackdrop = document.getElementById('menu-backdrop');
+
+        const openMobileMenu = () => {
+            mobileMenu.classList.add('active');
+            mobileMenuBtn.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        };
+
+        const closeMobileMenu = () => {
+            mobileMenu.classList.remove('active');
+            mobileMenuBtn.classList.remove('active');
+            document.body.style.overflow = '';
+        };
+
+        mobileMenuBtn.addEventListener('click', openMobileMenu);
+        closeMobileMenuBtn.addEventListener('click', closeMobileMenu);
+        mobileBackdrop.addEventListener('click', closeMobileMenu);
+
+        // Close mobile menu on link click
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', closeMobileMenu);
+        });
+
+        // Modal Logic
+        const voteModal = document.getElementById('vote-modal');
+        const closeModal = document.getElementById('close-modal');
+        const openModalBtn = document.getElementById('open-vote-modal');
+
+        const showModal = () => {
+            voteModal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        };
+
+        const hideModal = () => {
+            voteModal.classList.remove('active');
+            document.body.style.overflow = ''; // Enable scrolling
+        };
+
+        // Auto show modal after 1.5 seconds
+        window.addEventListener('load', () => {
+            setTimeout(showModal, 1500);
+        });
+
+        closeModal.addEventListener('click', hideModal);
+        openModalBtn.addEventListener('click', showModal);
+
+        // Add click listener to navbar CTA button
+        const openModalBtn2 = document.getElementById('open-vote-modal-2');
+        if (openModalBtn2) {
+            openModalBtn2.addEventListener('click', showModal);
+        }
+
+        // Add click listener to mobile CTA button
+        const mobileCTA = document.getElementById('mobile-cta');
+        if (mobileCTA) {
+            mobileCTA.addEventListener('click', (e) => {
+                e.preventDefault();
+                closeMobileMenu();
+                showModal();
+            });
+        }
+
+        // Close modal on backdrop click
+        voteModal.addEventListener('click', (e) => {
+            if (e.target === voteModal) hideModal();
+        });
+
+        // ── News Toggle Logic ──────────────────────────────────────────
+        const showAllNewsBtn = document.getElementById('show-all-news-btn');
+        const extraNews = document.getElementById('extra-news');
+        const btnText = document.getElementById('btn-text');
+        const btnIcon = document.getElementById('btn-icon');
+
+        if (showAllNewsBtn && extraNews) {
+            showAllNewsBtn.addEventListener('click', () => {
+                const isHidden = extraNews.classList.contains('hidden');
+                
+                if (isHidden) {
+                    // Show extra news
+                    extraNews.classList.remove('hidden');
+                    // Small timeout to allow browser to register the removal of 'hidden' before applying opacity/transform
+                    setTimeout(() => {
+                        extraNews.classList.remove('opacity-0', 'translate-y-10');
+                        extraNews.classList.add('opacity-100', 'translate-y-0');
+                    }, 10);
+                    
+                    btnText.innerText = 'إخفاء الأخبار الإضافية';
+                    btnIcon.style.transform = 'rotate(90deg)';
+                } else {
+                    // Hide extra news
+                    extraNews.classList.add('opacity-0', 'translate-y-10');
+                    extraNews.classList.remove('opacity-100', 'translate-y-0');
+                    
+                    // Wait for transition to finish before hiding
+                    setTimeout(() => {
+                        extraNews.classList.add('hidden');
+                    }, 700);
+                    
+                    btnText.innerText = 'عرض جميع الأخبار';
+                    btnIcon.style.transform = 'rotate(0deg)';
+                }
+            });
+        }
+
+        // ── CV Modal Logic ──────────────────────────────────────────
+        const cvModal = document.getElementById('cv-modal');
+        const openCvBtn = document.getElementById('open-cv-modal');
+        const closeCvBtn = document.getElementById('close-cv-modal');
+        const cvVoteBtn = document.getElementById('cv-modal-vote-btn');
+
+        const showCvModal = () => {
+            cvModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        };
+        const hideCvModal = () => {
+            cvModal.classList.remove('active');
+            document.body.style.overflow = '';
+        };
+
+        if (openCvBtn) openCvBtn.addEventListener('click', showCvModal);
+        if (closeCvBtn) closeCvBtn.addEventListener('click', hideCvModal);
+        cvModal.addEventListener('click', (e) => { if (e.target === cvModal) hideCvModal(); });
+
+        // "سجل دعمك الآن" inside CV modal → close CV, open Vote modal
+        if (cvVoteBtn) {
+            cvVoteBtn.addEventListener('click', () => {
+                hideCvModal();
+                showModal();
+            });
+        }
+
+        // Voting Logic with Dual-Backend and Offline Resilience
+        const SUPABASE_URL = 'https://sbvnrgjseqxuvjlcfnrp.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNidm5yZ2pzZXF4dXZqbGNmbnJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEyODcyNTgsImV4cCI6MjA5Njg2MzI1OH0.ylPtYMwcnp2tYViiGKHH_r0biw4ui6E2fyEqiNztQAU';
+        let sb = null;
+        try {
+            sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        } catch (e) {
+            console.error('Failed to initialize Supabase client:', e);
+        }
+
+        const voteForm = document.getElementById('vote-form');
+        const voteBtn = document.getElementById('vote-btn');
+        const voteCounter = document.getElementById('vote-counter');
+        const heroVoteCounter = document.getElementById('hero-vote-counter');
+        const voteProgress = document.getElementById('vote-progress');
+        const heroVoteProgress = document.getElementById('hero-vote-progress');
+        const voteMsg = document.getElementById('vote-msg');
+
+        const BASELINE_COUNT = 1152;
+        let currentTotalCount = BASELINE_COUNT;
+
+        // Fetch current count on load with cascade fallbacks
+        async function loadVoteCount() {
+            console.log('Attempting to load vote count...');
+
+            // 1. Try Supabase
+            if (sb) {
+                try {
+                    const { count, error } = await sb
+                        .from('votes')
+                        .select('*', { count: 'exact', head: true });
+
+                    if (!error && count !== null) {
+                        currentTotalCount = count;
+                        console.log('Loaded count from Supabase:', currentTotalCount);
+                        renderVoteCount(currentTotalCount);
+                        return;
+                    }
+                    console.warn('Supabase count error or empty:', error);
+                } catch (error) {
+                    console.error('Supabase load failed:', error);
+                }
+            }
+
+            // 2. Try Local API Server Fallback
+            try {
+                const response = await fetch('/api/vote-count');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data && typeof data.count === 'number') {
+                        currentTotalCount = data.count;
+                        console.log('Loaded count from Local API:', currentTotalCount);
+                        renderVoteCount(currentTotalCount);
+                        return;
+                    }
+                }
+            } catch (error) {
+                console.error('Local API load failed:', error);
+            }
+
+            // 3. Fallback to LocalStorage and Baseline
+            const localVotes = JSON.parse(localStorage.getItem('local_votes') || '[]');
+            currentTotalCount = BASELINE_COUNT + localVotes.length;
+            console.log('Using fallback offline baseline count:', currentTotalCount);
+            renderVoteCount(currentTotalCount);
+        }
+
+        function renderVoteCount(count) {
+            voteCounter.innerText = count.toLocaleString();
+            heroVoteCounter.innerText = count.toLocaleString();
+            updateProgressBar(count);
+        }
+
+        loadVoteCount();
+
+        function updateProgressBar(count) {
+            const target = 2500;
+            const percentage = Math.min((count / target) * 100, 100);
+            if (voteProgress) voteProgress.style.width = percentage + '%';
+            if (heroVoteProgress) heroVoteProgress.style.width = percentage + '%';
+        }
+
+        voteForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('voter-name').value;
+            const email = document.getElementById('voter-email').value;
+
+            voteBtn.disabled = true;
+            voteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التسجيل...';
+
+            let savedSuccessfully = false;
+
+            // 1. Try Supabase Save
+            if (sb) {
+                try {
+                    console.log('Saving vote to Supabase...');
+                    const { error } = await sb
+                        .from('votes')
+                        .insert([{ name, email }]);
+
+                    if (!error) {
+                        savedSuccessfully = true;
+                        console.log('Saved to Supabase successfully.');
+                    } else {
+                        console.warn('Supabase insert error:', error);
+                    }
+                } catch (error) {
+                    console.error('Supabase insert failed:', error);
+                }
+            }
+
+            // 2. Try Local API Server Save
+            if (!savedSuccessfully) {
+                try {
+                    console.log('Fallback: Saving vote to Local API...');
+                    const response = await fetch('/api/vote', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name, email })
+                    });
+                    if (response.ok) {
+                        const data = await response.json();
+                        currentTotalCount = data.count;
+                        savedSuccessfully = true;
+                        console.log('Saved to Local API successfully.');
+                    }
+                } catch (error) {
+                    console.error('Local API save failed:', error);
+                }
+            }
+
+            // 3. Fallback to LocalStorage
+            if (!savedSuccessfully) {
+                console.log('Fallback: Saving vote offline (LocalStorage)...');
+                const localVotes = JSON.parse(localStorage.getItem('local_votes') || '[]');
+                localVotes.push({ name, email, date: new Date().toISOString() });
+                localStorage.setItem('local_votes', JSON.stringify(localVotes));
+                currentTotalCount = BASELINE_COUNT + localVotes.length;
+                savedSuccessfully = true;
+            }
+
+            if (savedSuccessfully) {
+                await loadVoteCount();
+
+                voteBtn.innerHTML = '<span>تم تسجيل دعمكم بنجاح!</span> <i class="fas fa-check-double"></i>';
+                voteBtn.classList.remove('bg-jj-dark-blue');
+                voteBtn.classList.add('bg-jj-gold', 'animate-vote-success');
+                setTimeout(() => {
+                    voteCounter.classList.remove('scale-125', 'text-jj-gold');
+                    heroVoteCounter.classList.remove('scale-125', 'text-jj-gold');
+                }, 1000);
+
+                voteMsg.innerText = "شكراً جزيلاً، تم تسجيل صوتك بنجاح.";
+                voteMsg.classList.add('text-jj-dark-blue', 'font-bold', 'text-sm');
+                voteMsg.classList.remove('text-dz-slate/40');
+
+                setTimeout(() => {
+                    hideModal();
+                    voteBtn.disabled = false;
+                    voteBtn.innerHTML = '<span>تأكيد الدعم الآن</span> <i class="fas fa-arrow-left"></i>';
+                    voteBtn.classList.add('bg-jj-dark-blue');
+                    voteBtn.classList.remove('bg-jj-gold', 'animate-vote-success');
+                    voteForm.reset();
+                }, 3000);
+            } else {
+                alert('حدث خطأ غير متوقع أثناء الحفظ.');
+                voteBtn.disabled = false;
+                voteBtn.innerHTML = '<span>تأكيد الدعم الآن</span> <i class="fas fa-arrow-left"></i>';
+            }
+        });
+
+        // Volunteer Form Submission with Fallback
+        document.getElementById('volunteer-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('volunteer-name').value;
+            const phone = document.getElementById('volunteer-phone').value;
+            const email = document.getElementById('volunteer-email').value;
+            const interest = document.getElementById('volunteer-interest').value;
+            const btn = document.getElementById('volunteer-btn');
+
+            btn.disabled = true;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
+
+            let submitted = false;
+
+            // 1. Try Supabase
+            if (sb) {
+                try {
+                    const { error } = await sb
+                        .from('volunteers')
+                        .insert([{ name, phone, email, interest }]);
+                    if (!error) submitted = true;
+                } catch (error) {
+                    console.error('Supabase volunteer submit failed:', error);
+                }
+            }
+
+            // 2. Fallback to LocalStorage
+            if (!submitted) {
+                console.log('Saving volunteer request locally...');
+                const localVolunteers = JSON.parse(localStorage.getItem('local_volunteers') || '[]');
+                localVolunteers.push({ name, phone, email, interest, date: new Date().toISOString() });
+                localStorage.setItem('local_volunteers', JSON.stringify(localVolunteers));
+                submitted = true;
+            }
+
+            if (submitted) {
+                btn.innerHTML = '<i class="fas fa-check"></i> تم الإرسال بنجاح!';
+                alert('شكراً لاهتمامكم! تم استلام طلب التطوع بنجاح وسنتواصل معكم قريباً.');
+                e.target.reset();
+            } else {
+                alert('حدث خطأ أثناء الإرسال. الرجاء المحاولة مرة أخرى.');
+            }
+
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }, 2000);
+        });
+
+        // ============================================================
+        //  CANVAS BACKGROUND ENGINE — Premium navy nebula + cursor glow
+        // ============================================================
+        (function initCanvas() {
+            const canvas = document.getElementById('bg-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            let W, H;
+            const resize = () => {
+                W = canvas.width = window.innerWidth;
+                H = canvas.height = window.innerHeight;
+            };
+            resize();
+            window.addEventListener('resize', resize);
+
+            // Mouse cursor position for interactive spotlight
+            let mouseX = -500, mouseY = -500;
+            window.addEventListener('mousemove', (e) => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            }, { passive: true });
+
+            // Dot-star particles (optimized count for mobile perf)
+            const DOT_COUNT = 45;
+            const dots = Array.from({ length: DOT_COUNT }, () => ({
+                x: Math.random() * window.innerWidth,
+                y: Math.random() * window.innerHeight,
+                r: Math.random() * 1.6 + 0.3,
+                vx: (Math.random() - 0.5) * 0.16,
+                vy: (Math.random() - 0.5) * 0.16,
+                alpha: Math.random() * 0.45 + 0.06
+            }));
+
+            // Gold accent lines — expanded to 7 for full spatial coverage
+            const LINES = [
+                { x1: 0.04, y1: 0.12, x2: 0.33, y2: 0.34 },
+                { x1: 0.66, y1: 0.06, x2: 0.96, y2: 0.40 },
+                { x1: 0.08, y1: 0.68, x2: 0.38, y2: 0.88 },
+                { x1: 0.60, y1: 0.63, x2: 0.94, y2: 0.82 },
+                { x1: 0.20, y1: 0.04, x2: 0.55, y2: 0.25 },
+                { x1: 0.42, y1: 0.78, x2: 0.78, y2: 0.96 },
+                { x1: 0.02, y1: 0.42, x2: 0.22, y2: 0.62 },
+            ];
+
+            let frame = 0;
+            function draw() {
+                frame++;
+                ctx.clearRect(0, 0, W, H);
+
+                // ── Deep navy base fill
+                ctx.fillStyle = '#0F1E46';
+                ctx.fillRect(0, 0, W, H);
+
+                // ── Dual radial nebula highlights (GPU-friendly)
+                // Blue bloom — top centre
+                const g1 = ctx.createRadialGradient(W * 0.5, 0, 0, W * 0.5, H * 0.38, H * 0.82);
+                g1.addColorStop(0, 'rgba(26,58,120,0.42)');
+                g1.addColorStop(1, 'rgba(10,20,47,0)');
+                ctx.fillStyle = g1;
+                ctx.fillRect(0, 0, W, H);
+
+                // Teal hint — bottom right
+                const g2 = ctx.createRadialGradient(W * 0.85, H, 0, W * 0.75, H * 0.75, H * 0.55);
+                g2.addColorStop(0, 'rgba(14,40,90,0.28)');
+                g2.addColorStop(1, 'rgba(10,20,47,0)');
+                ctx.fillStyle = g2;
+                ctx.fillRect(0, 0, W, H);
+
+                // ── Interactive cursor spotlight (gold glow follows mouse)
+                if (mouseX > 0) {
+                    const gCursor = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, 130);
+                    gCursor.addColorStop(0, 'rgba(217,177,55,0.07)');
+                    gCursor.addColorStop(1, 'rgba(217,177,55,0)');
+                    ctx.fillStyle = gCursor;
+                    ctx.fillRect(0, 0, W, H);
+                }
+
+                // ── Subtle pulsing gold accent lines
+                LINES.forEach((l, i) => {
+                    const pulse = 0.035 + 0.022 * Math.sin(frame * 0.011 + i * 0.9);
+                    ctx.save();
+                    ctx.globalAlpha = pulse;
+                    ctx.strokeStyle = '#D9B137';
+                    ctx.lineWidth = 0.75;
+                    ctx.beginPath();
+                    ctx.moveTo(l.x1 * W, l.y1 * H);
+                    ctx.lineTo(l.x2 * W, l.y2 * H);
+                    ctx.stroke();
+                    ctx.restore();
+                });
+
+                // ── Draw + drift dots
+                dots.forEach(d => {
+                    d.x += d.vx;
+                    d.y += d.vy;
+                    if (d.x < 0) d.x = W;
+                    if (d.x > W) d.x = 0;
+                    if (d.y < 0) d.y = H;
+                    if (d.y > H) d.y = 0;
+
+                    ctx.save();
+                    ctx.globalAlpha = d.alpha;
+                    ctx.fillStyle = '#D9B137';
+                    ctx.beginPath();
+                    ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                });
+
+                requestAnimationFrame(draw);
+            }
+            draw();
+        })();
+
+        // ============================================================
+        //  PARALLAX MAP — subtle vertical shift + depth scale on scroll
+        // ============================================================
+        (function initParallax() {
+            const mapEl = document.getElementById('parallax-map');
+            if (!mapEl) return;
+            let ticking = false;
+            window.addEventListener('scroll', () => {
+                if (!ticking) {
+                    requestAnimationFrame(() => {
+                        const scrollY = window.scrollY;
+                        // Slower parallax factor (0.06) + gentle depth scale
+                        const scale = 1 + scrollY * 0.000028;
+                        mapEl.style.transform = `translateY(${scrollY * 0.06}px) scale(${scale})`;
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            }, { passive: true });
+        })();
+
+        // ============================================================
+        //  SCROLL ANIMATION OBSERVER
+        // ============================================================
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.scroll-animate').forEach((el, index) => {
+                el.style.transitionDelay = `${index * 0.08}s`;
+                observer.observe(el);
+            });
+            // Trigger hero immediately
+            document.querySelectorAll('#hero .scroll-animate').forEach((el, i) => {
+                setTimeout(() => el.classList.add('visible'), i * 120 + 200);
+            });
+        });
+    </script>
+</body>
+
+</html>

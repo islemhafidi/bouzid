@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>خطاب المترشح | الأستاذ حناشي بوزيد</title>
+
+    <!-- Google Fonts: Cairo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'jj-dark-blue': '#0F1E46',
+                        'jj-blue': '#162B5E',
+                        'jj-navy': '#0A142F',
+                        'jj-gold': '#D9B137',
+                        'jj-gold-light': '#F0CB5A',
+                        'dz-white': '#FFFFFF',
+                        'dz-slate': '#E8EDF5',
+                    },
+                    fontFamily: {
+                        'cairo': ['Cairo', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #0F1E46;
+            color: #E8EDF5;
+            overflow-x: hidden;
+        }
+
+        #bg-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -10;
+            pointer-events: none;
+        }
+
+        .discour-container {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 2rem;
+            color: #0F1E46;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="bg-canvas"></canvas>
+
+    <header class="fixed top-0 left-0 right-0 z-50">
+        <div class="container mx-auto px-4 md:px-6 py-6">
+            <a href="index.html" class="inline-flex items-center gap-3 group bg-jj-dark-blue/40 hover:bg-jj-dark-blue/60 backdrop-blur-md border border-white/10 px-5 py-3 rounded-2xl transition-all duration-300 shadow-xl">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-jj-gold to-jj-gold-light flex items-center justify-center text-jj-dark-blue shadow-lg shadow-jj-gold/30 group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-arrow-right text-lg"></i>
+                </div>
+                <span class="text-white font-bold">العودة للرئيسية</span>
+            </a>
+        </div>
+    </header>
+
+    <main class="pt-32 pb-20">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="discour-container p-6 md:p-12 max-w-4xl mx-auto relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-jj-dark-blue/5 rounded-full -mr-16 -mt-16"></div>
+                
+                <div class="relative z-10">
+                    <div class="text-center mb-12">
+                        <div class="w-20 h-20 bg-jj-gold/10 rounded-3xl flex items-center justify-center text-jj-gold text-4xl mx-auto mb-6">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <h2 class="font-black text-3xl md:text-5xl mb-4 text-jj-dark-blue">خطاب المترشح حناشي بوزيد</h2>
+                        <p class="text-gray-600 text-lg">إلى مواطنات ومواطني ولاية خنشلة</p>
+                    </div>
+
+                    <div class="text-gray-800 leading-relaxed space-y-6 text-lg md:text-xl text-justify">
+                        <p class="text-xl md:text-2xl font-bold text-jj-dark-blue text-center mb-10 leading-snug">
+                            أتقدم إلى مواطنات ومواطني ولاية خنشلة بروح المسؤولية والثقة في وعيهم وحسن اختيارهم.
+                        </p>
+                        
+                        <p>
+                            لقد قررت خوض هذه الانتخابات تيقننا مني بأن المشاركة السياسية الواعية هي إحدى وسائل خدمة المجتمع
+                            والدفاع عن مصالح المواطنين، وأن البرلمان فضاء لإيصال صوت الشعب والمساهمة في بناء مستقبل أفضل
+                            لأبنائنا.
+                        </p>
+                        
+                        <p>
+                            أود أن أوضح أنني لا أقدم وعوداً غير واقعية، لأن النائب ليس مسؤولًا تنفيذيًا يملك صلاحية إنجاز
+                            المشاريع أو حل جميع المشاكل بمفرده، وإنما دوره يتمثل في تمثيل المواطنين، واقتراح القوانين،
+                            ومراقبة عمل الحكومة، والدفاع عن الانشغالات المشروعة للمجتمع.
+                        </p>
+                        
+                        <p class="font-bold text-jj-dark-blue text-xl mt-8">أما فيما يتعلق ببرنامج عملي، فإنه يرتكز على عدة محاور أساسية:</p>
+                        
+                        <div class="grid gap-6 mt-6">
+                            <div class="bg-jj-dark-blue/5 p-6 rounded-2xl border border-jj-dark-blue/10">
+                                <h4 class="font-bold text-jj-dark-blue text-xl mb-3 flex items-center gap-3">
+                                    <span class="w-8 h-8 rounded-lg bg-jj-dark-blue text-white flex items-center justify-center text-sm">١</span>
+                                    الإنصات للمواطن
+                                </h4>
+                                <p>سأعمل على البقاء قريبًا من المواطنين والاستماع إلى انشغالاتهم الحقيقية، لأن أفضل البرامج هي تلك التي تنطلق من الواقع اليومي للمواطن.</p>
+                            </div>
+
+                            <div class="bg-jj-dark-blue/5 p-6 rounded-2xl border border-jj-dark-blue/10">
+                                <h4 class="font-bold text-jj-dark-blue text-xl mb-3 flex items-center gap-3">
+                                    <span class="w-8 h-8 rounded-lg bg-jj-dark-blue text-white flex items-center justify-center text-sm">٢</span>
+                                    التنمية المحلية
+                                </h4>
+                                <p>الدفاع عن المشاريع التنموية التي تحتاجها الولاية في مجالات البنية التحتية، والسكن، والصحة، والتعليم، والنقل والخدمات العمومية.</p>
+                            </div>
+
+                            <div class="bg-jj-dark-blue/5 p-6 rounded-2xl border border-jj-dark-blue/10">
+                                <h4 class="font-bold text-jj-dark-blue text-xl mb-3 flex items-center gap-3">
+                                    <span class="w-8 h-8 rounded-lg bg-jj-dark-blue text-white flex items-center justify-center text-sm">٣</span>
+                                    الشباب والتشغيل
+                                </h4>
+                                <p>دعم المبادرات الاقتصادية للشباب، وتشجيع الاستثمار المحلي، والمرافعة من أجل خلق فرص عمل تحفظ كرامة الشباب وتفتح أمامهم آفاق المستقبل.</p>
+                            </div>
+
+                            <div class="bg-jj-dark-blue/5 p-6 rounded-2xl border border-jj-dark-blue/10">
+                                <h4 class="font-bold text-jj-dark-blue text-xl mb-3 flex items-center gap-3">
+                                    <span class="w-8 h-8 rounded-lg bg-jj-dark-blue text-white flex items-center justify-center text-sm">٤</span>
+                                    التعليم والتكوين
+                                </h4>
+                                <p>باعتباري من أسرة التربية والتعليم، سأواصل الدفاع عن المدرسة الجزائرية، وتحسين ظروف التمدرس والتكوين، وتثمين مكانة الأستاذ.</p>
+                            </div>
+
+                            <div class="bg-jj-dark-blue/5 p-6 rounded-2xl border border-jj-dark-blue/10">
+                                <h4 class="font-bold text-jj-dark-blue text-xl mb-3 flex items-center gap-3">
+                                    <span class="w-8 h-8 rounded-lg bg-jj-dark-blue text-white flex items-center justify-center text-sm">٥</span>
+                                    العدالة الاجتماعية
+                                </h4>
+                                <p>المساهمة في كل ما من شأنه حماية الفئات الهشة وتحسين الظروف المعيشية للمواطنين وتعزيز مبدأ تكافؤ الفرص.</p>
+                            </div>
+                        </div>
+
+                        <p class="mt-10">
+                            أيها المواطنات والمواطنون إن ولاية خنشلة أكبر من الأشخاص والأحزاب والمصالح الضيقة، وهي تستحق منا
+                            جميعاً العمل الجاد والتنافس الشريف وتغليب المصلحة العامة على كل اعتبار.
+                        </p>
+                        
+                        <p>
+                            أتطلع إلى أن أكون صوتًا صادقًا لكم، وأن أحمل انشغالاتكم وآمالكم بكل أمانة ومسؤولية، واضعًا نصب
+                            عيني خدمة الوطن والمواطن، والمساهمة في دعم مسيرة التنمية والإصلاح. ولهذا اطلب وادعو الجميع
+                            المشاركة في انجاح هذا العرس الانتخابي والتصويت على قائمة حزب جيل جديد والتي تحمل رقم 14
+                        </p>
+
+                        <div class="text-center space-y-4 py-10">
+                            <p class="font-black text-jj-dark-blue text-2xl">شعارها واجب المبادرة</p>
+                            <p class="font-bold text-jj-dark-blue text-xl">وفقنا الله جميعًا لما فيه خير لخنشلة وأهله والجزائر،</p>
+                            <p class="font-bold text-jj-dark-blue text-xl">المجد والخلود لشهدائنا الأبرار، تحيا الجزائر</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer CTA -->
+                <div class="mt-12 p-8 bg-jj-dark-blue rounded-3xl text-center text-white">
+                    <h3 class="text-2xl font-bold mb-4">كن جزءاً من التغيير</h3>
+                    <p class="mb-8 opacity-80">صوتكم أمانة، ومستقبل خنشلة بين أيديكم. صوتوا للقائمة رقم 14</p>
+                    <a href="index.html#hero" class="inline-block bg-jj-gold hover:bg-jj-gold-light text-jj-dark-blue px-10 py-4 rounded-2xl font-black transition-all shadow-xl shadow-jj-gold/20">
+                        سجل دعمك الآن
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Background Animation
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let W, H;
+        const resize = () => {
+            W = canvas.width = window.innerWidth;
+            H = canvas.height = window.innerHeight;
+        };
+        resize();
+        window.addEventListener('resize', resize);
+
+        const dots = Array.from({ length: 40 }, () => ({
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            r: Math.random() * 2 + 0.5,
+            vx: (Math.random() - 0.5) * 0.3,
+            vy: (Math.random() - 0.5) * 0.3,
+            alpha: Math.random() * 0.4 + 0.1
+        }));
+
+        function draw() {
+            ctx.clearRect(0, 0, W, H);
+            ctx.fillStyle = '#0F1E46';
+            ctx.fillRect(0, 0, W, H);
+
+            dots.forEach(d => {
+                d.x += d.vx;
+                d.y += d.vy;
+                if (d.x < 0) d.x = W; if (d.x > W) d.x = 0;
+                if (d.y < 0) d.y = H; if (d.y > H) d.y = 0;
+                ctx.globalAlpha = d.alpha;
+                ctx.fillStyle = '#D9B137';
+                ctx.beginPath();
+                ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            requestAnimationFrame(draw);
+        }
+        draw();
+    </script>
+</body>
+
+</html>

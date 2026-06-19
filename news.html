@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">تفاصيل الخبر | الأستاذ حناشي بوزيد</title>
+
+    <!-- Google Fonts: Cairo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'jj-dark-blue': '#0F1E46',
+                        'jj-blue': '#162B5E',
+                        'jj-navy': '#0A142F',
+                        'jj-gold': '#D9B137',
+                        'jj-gold-light': '#F0CB5A',
+                        'dz-white': '#FFFFFF',
+                        'dz-slate': '#E8EDF5',
+                    },
+                    fontFamily: {
+                        'cairo': ['Cairo', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #0F1E46;
+            color: #E8EDF5;
+            overflow-x: hidden;
+        }
+
+        #bg-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -10;
+            pointer-events: none;
+        }
+
+        .glass-nav {
+            background: rgba(15, 30, 70, 0.75);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(217, 177, 55, 0.18);
+        }
+
+        .news-container {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 2rem;
+            color: #0F1E46;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="bg-canvas"></canvas>
+
+    <header class="fixed top-0 left-0 right-0 z-50">
+        <div class="container mx-auto px-4 md:px-6 py-4">
+            <nav class="glass-nav relative flex items-center justify-between gap-6 rounded-2xl shadow-2xl px-4 md:px-6 py-3 md:py-4">
+                <a href="index.html" class="flex items-center gap-3 group">
+                    <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-jj-gold to-jj-gold-light flex items-center justify-center text-jj-dark-blue shadow-lg shadow-jj-gold/30 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-arrow-right text-lg md:text-xl"></i>
+                    </div>
+                    <div class="text-right">
+                        <h1 class="text-base md:text-lg font-black text-white leading-tight">العودة للرئيسية</h1>
+                    </div>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="pt-32 pb-20">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="news-container p-6 md:p-12 max-w-5xl mx-auto">
+                <div id="news-content">
+                    <div class="animate-pulse flex flex-col gap-6">
+                        <div class="h-64 md:h-96 bg-gray-200 rounded-2xl"></div>
+                        <div class="h-8 bg-gray-200 rounded w-3/4"></div>
+                        <div class="space-y-3">
+                            <div class="h-4 bg-gray-200 rounded"></div>
+                            <div class="h-4 bg-gray-200 rounded"></div>
+                            <div class="h-4 bg-gray-200 rounded w-5/6"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Back to Home Button -->
+                <div class="mt-12 text-center">
+                    <a href="index.html#news" class="inline-flex items-center gap-2 bg-jj-dark-blue hover:bg-jj-blue text-white px-8 py-3 rounded-xl font-bold shadow-lg transition-all">
+                        <i class="fas fa-th-large"></i>
+                        <span>مشاهدة المزيد من الأخبار</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Background Animation Logic (Simplified version of index.html)
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let W, H;
+        const resize = () => {
+            W = canvas.width = window.innerWidth;
+            H = canvas.height = window.innerHeight;
+        };
+        resize();
+        window.addEventListener('resize', resize);
+
+        const DOT_COUNT = 30;
+        const dots = Array.from({ length: DOT_COUNT }, () => ({
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            r: Math.random() * 1.5 + 0.5,
+            vx: (Math.random() - 0.5) * 0.2,
+            vy: (Math.random() - 0.5) * 0.2,
+            alpha: Math.random() * 0.5 + 0.1
+        }));
+
+        function draw() {
+            ctx.clearRect(0, 0, W, H);
+            ctx.fillStyle = '#0F1E46';
+            ctx.fillRect(0, 0, W, H);
+
+            dots.forEach(d => {
+                d.x += d.vx;
+                d.y += d.vy;
+                if (d.x < 0) d.x = W; if (d.x > W) d.x = 0;
+                if (d.y < 0) d.y = H; if (d.y > H) d.y = 0;
+                ctx.globalAlpha = d.alpha;
+                ctx.fillStyle = '#D9B137';
+                ctx.beginPath();
+                ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            requestAnimationFrame(draw);
+        }
+        draw();
+
+        // News Content Logic
+        const newsData = {
+            'babar': {
+                title: "مداومة في بلدية بابار",
+                category: "إطلاق الحملة",
+                image: "babar.jpg",
+                date: "19 جوان 2026",
+                content: "لقد شهدت بلدية بابار اليوم حدثاً تاريخياً بإطلاق المداومة الانتخابية للأستاذ حناشي بوزيد، مرشح حزب جيل جديد. وقد شهد اللقاء حضوراً مكثفاً من مواطني البلدية الذين عبروا عن دعمهم الكامل وتأييدهم للبرنامج الانتخابي الطموح الذي يحمله الأستاذ. ركز الخطاب الافتتاحي على أهمية التنمية المحلية في بلدية بابار، خاصة في مجالات البنية التحتية والشباب، واعداً بالعمل الجاد لإيصال صوت سكان المنطقة إلى قبة البرلمان."
+            },
+            'boujalbana': {
+                title: "مداومة في حي بوجلبانة",
+                category: "مداومة",
+                image: "boujalbana.jpg",
+                date: "18 جوان 2026",
+                content: "تم اليوم افتتاح المداومة الرسمية في حي بوجلبانة بمدينة خنشلة، في جو يسوده التفاؤل والروح الوطنية. اللقاء كان فرصة للأستاذ حناشي بوزيد للحديث مباشرة مع سكان الحي والاستماع إلى انشغالاتهم اليومية. ناقش الأستاذ خلال اللقاء محاور برنامجه المتعلقة بالتحسين الحضري وتطوير الخدمات العمومية في الأحياء العريقة، مؤكداً أن المواطن هو حجر الزاوية في أي تغيير منشود."
+            },
+            'university': {
+                title: "زيارة تفقدية لجامعة خنشلة",
+                category: "زيارة ميدانية",
+                image: "candidat-hanachi.jpg",
+                date: "17 جوان 2026",
+                content: "باعتباره ابناً لقطاع التعليم العالي، قام الأستاذ حناشي بوزيد بزيارة ميدانية لجامعة عباس لغرور بخنشلة. الزيارة كانت فرصة ذهبية للالتقاء بالأسرة الجامعية من أساتذة وموظفين وطلبة. تركز النقاش حول مستقبل التعليم العالي والبحث العلمي في الجزائر، وكيفية ربط الجامعة بالمحيط الاقتصادي والاجتماعي. وقد وعد الأستاذ بالمرافعة من أجل تحسين ظروف البحث العلمي وتطوير المنظومة الجامعية لتواكب التحديات العصرية."
+            }
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const newsId = params.get('id');
+            const data = newsData[newsId];
+
+            if (data) {
+                document.getElementById('page-title').innerText = `${data.title} | الأستاذ حناشي بوزيد`;
+                document.getElementById('news-content').innerHTML = `
+                    <div class="mb-8">
+                        <div class="w-full h-64 md:h-[500px] overflow-hidden rounded-3xl mb-8 shadow-lg">
+                            <img src="${data.image}" alt="${data.title}" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="bg-jj-dark-blue/10 text-jj-dark-blue px-4 py-1.5 rounded-full text-sm font-bold uppercase tracking-wider">${data.category}</span>
+                            <span class="text-gray-500 text-sm"><i class="far fa-calendar-alt ml-1"></i> ${data.date}</span>
+                        </div>
+                        <h2 class="font-black text-3xl md:text-5xl mb-8 text-jj-dark-blue leading-tight">${data.title}</h2>
+                        <div class="text-gray-800 leading-relaxed space-y-6 text-lg md:text-xl text-justify">
+                            <p>${data.content}</p>
+                            <p>نحن نؤمن بأن التغيير يبدأ منكم، ومن خلال مشاركتكم الفعالة في هذه الانتخابات، يمكننا معاً بناء مستقبل أفضل لولاية خنشلة وللجزائر قاطبة. حزب جيل جديد يحمل رؤية شبابية وعصرية تهدف إلى خدمة المواطن وتنمية الوطن.</p>
+                        </div>
+                    </div>
+                `;
+            } else {
+                document.getElementById('news-content').innerHTML = `
+                    <div class="text-center py-20">
+                        <i class="fas fa-exclamation-triangle text-6xl text-jj-gold mb-6"></i>
+                        <h2 class="text-3xl font-bold text-jj-dark-blue mb-4">عذراً، الخبر غير موجود</h2>
+                        <p class="text-gray-600 mb-8">قد يكون الرابط غير صحيح أو تم نقل الخبر.</p>
+                        <a href="index.html" class="bg-jj-dark-blue text-white px-8 py-3 rounded-xl">العودة للرئيسية</a>
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+
+</html>
