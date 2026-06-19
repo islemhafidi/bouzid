@@ -5,6 +5,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="page-title">تفاصيل الخبر | الأستاذ حناشي بوزيد</title>
+    
+    <meta id="meta-description" name="description" content="متابعة آخر الأخبار، النشاطات الميدانية، واللقاءات الجوارية للأستاذ حناشي بوزيد مرشح حزب جيل جديد ولاية خنشلة.">
+    <meta name="keywords" content="أخبار الحملة, جيل جديد, حناشي بوزيد, خنشلة, مداومة, لقاء جواري">
+    <meta name="robots" content="index, follow">
+    <link id="canonical-link" rel="canonical" href="https://hannachibouzid.com/news.html">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta id="og-url" property="og:url" content="https://hannachibouzid.com/news.html">
+    <meta id="og-title" property="og:title" content="أخبار الحملة الانتخابية | الأستاذ حناشي بوزيد">
+    <meta id="og-description" property="og:description" content="تابع التغطية الحصرية لأخر أخبار ونشاطات حملة الأستاذ حناشي بوزيد مرشح حزب جيل جديد ولاية خنشلة.">
+    <meta id="og-image" property="og:image" content="https://hannachibouzid.com/seo.png">
+    <meta property="og:locale" content="ar_DZ">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta id="twitter-url" property="twitter:url" content="https://hannachibouzid.com/news.html">
+    <meta id="twitter-title" property="twitter:title" content="أخبار الحملة الانتخابية | الأستاذ حناشي بوزيد">
+    <meta id="twitter-description" property="twitter:description" content="تابع التغطية الحصرية لأخر أخبار ونشاطات حملة الأستاذ حناشي بوزيد مرشح حزب جيل جديد ولاية خنشلة.">
+    <meta id="twitter-image" property="twitter:image" content="https://hannachibouzid.com/seo.png">
 
     <!-- Google Fonts: Cairo -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -319,11 +339,42 @@
             const data = newsData[newsId];
 
             if (data) {
-                document.getElementById('page-title').innerText = `${data.title} | الأستاذ حناشي بوزيد`;
+                const pageTitle = `${data.title} | الأستاذ حناشي بوزيد`;
+                const pageDescription = data.content.substring(0, 150) + '...';
+                const pageUrl = `https://hannachibouzid.com/news.html?id=${newsId}`;
+                const imageUrl = `https://hannachibouzid.com/${data.image}`;
+
+                // Update standard SEO
+                document.getElementById('page-title').innerText = pageTitle;
+                const metaDesc = document.getElementById('meta-description');
+                if (metaDesc) metaDesc.setAttribute('content', pageDescription);
+                const canonicalLink = document.getElementById('canonical-link');
+                if (canonicalLink) canonicalLink.setAttribute('href', pageUrl);
+
+                // Update Open Graph
+                const ogUrl = document.getElementById('og-url');
+                if (ogUrl) ogUrl.setAttribute('content', pageUrl);
+                const ogTitle = document.getElementById('og-title');
+                if (ogTitle) ogTitle.setAttribute('content', pageTitle);
+                const ogDesc = document.getElementById('og-description');
+                if (ogDesc) ogDesc.setAttribute('content', pageDescription);
+                const ogImage = document.getElementById('og-image');
+                if (ogImage) ogImage.setAttribute('content', imageUrl);
+
+                // Update Twitter
+                const twitterUrl = document.getElementById('twitter-url');
+                if (twitterUrl) twitterUrl.setAttribute('content', pageUrl);
+                const twitterTitle = document.getElementById('twitter-title');
+                if (twitterTitle) twitterTitle.setAttribute('content', pageTitle);
+                const twitterDesc = document.getElementById('twitter-description');
+                if (twitterDesc) twitterDesc.setAttribute('content', pageDescription);
+                const twitterImage = document.getElementById('twitter-image');
+                if (twitterImage) twitterImage.setAttribute('content', imageUrl);
+
                 document.getElementById('news-content').innerHTML = `
                     <div class="mb-8">
                         <div class="w-full h-64 md:h-[500px] overflow-hidden rounded-3xl mb-8 shadow-lg">
-                            <img src="${data.image}" alt="${data.title}" class="w-full h-full object-cover">
+                            <img src="${data.image}" alt="${data.title} - الأستاذ حناشي بوزيد - ولاية خنشلة" class="w-full h-full object-cover">
                         </div>
                         <div class="flex items-center gap-3 mb-4">
                             <span class="bg-jj-dark-blue/10 text-jj-dark-blue px-4 py-1.5 rounded-full text-sm font-bold uppercase tracking-wider">${data.category}</span>
