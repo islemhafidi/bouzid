@@ -1,0 +1,16 @@
+# Dependency directories (مجلدات الحزم الضخمة التلقائية)
+node_modules/
+
+# Local Environment Variables (ملفات البيئة الحساسة)
+.env
+.env.local
+
+# Screenshots & Reference Images (تجاهل لقطات الشاشة والصور التجريبية غير المستخدمة في الموقع)
+screenshot-reference.png
+
+# OS system files (ملفات النظام التلقائية)
+.DS_Store
+Thumbs.db
+
+# Logs (سجلات الأخطاء)
+npm-debug.log*
