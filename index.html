@@ -2447,7 +2447,7 @@
         loadNews();
 
         function updateProgressBar(count) {
-            const target = 2500;
+            const target = 10000;
             const percentage = Math.min((count / target) * 100, 100);
             if (voteProgress) voteProgress.style.width = percentage + '%';
             if (heroVoteProgress) heroVoteProgress.style.width = percentage + '%';
